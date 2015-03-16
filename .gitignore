@@ -2,6 +2,7 @@
 /build/
 /bin/
 target/
+venv/
  
 # OS Files #
 .DS_Store
