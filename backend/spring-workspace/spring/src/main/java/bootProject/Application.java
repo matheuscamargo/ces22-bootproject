@@ -1,4 +1,4 @@
-package hello;
+package bootProject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
