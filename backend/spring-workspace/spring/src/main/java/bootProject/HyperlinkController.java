@@ -28,7 +28,6 @@ public class HyperlinkController {
     	logger.info("Start addHyperlink.");
     	Date now = new Date();
     	String[] tags = new String[]{"tag1", "tag2", "tag3"};
-    	
         return new Hyperlink("www.google.com", now,tags);
     }
     
