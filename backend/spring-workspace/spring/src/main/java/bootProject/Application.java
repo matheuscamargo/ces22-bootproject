@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import model.Customer;
+import model.Hyperlink;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -40,17 +40,16 @@ public class Application implements CommandLineRunner {
         }
 
         System.out.println("Querying for customer records where first_name = 'Josh':");
-        List<Customer> results = jdbcTemplate.query(
+        List<Hyperlink> results = jdbcTemplate.query(
                 "select id, first_name, last_name from customers where first_name = ?", new Object[] { "Josh" },
-                new RowMapper<Customer>() {
+                new RowMapper<Hyperlink>() {
                     @Override
-                    public Customer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new Customer(rs.getLong("id"), rs.getString("first_name"),
-                                rs.getString("last_name"));
+                    public Hyperlink mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new Hyperlink(1, "www.google.com", null);
                     }
                 });
 
-        for (Customer customer : results) {
+        for (Hyperlink customer : results) {
             System.out.println(customer);
         }
     }

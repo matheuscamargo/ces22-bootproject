@@ -2,6 +2,9 @@ package model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 //model class for describing a Hyperlink
 public class Hyperlink {
 	
@@ -10,16 +13,13 @@ public class Hyperlink {
 	private String[] tags;
 	private Date addedAt, lastEditedAt;
 	
-	public Hyperlink(String link, Date addedAt, String[] tags) {
-		this.link = link;
-		this.addedAt = addedAt;
-		this.lastEditedAt = addedAt;
-		this.tags = tags;
-	}
-	
-	public Hyperlink(long id, String link) {
+	@JsonCreator
+	public Hyperlink(@JsonProperty("id") long id,
+					 @JsonProperty("link") String link,
+					 @JsonProperty("tags") String[] tags) {
 		this.id = id;
 		this.link = link;
+		this.tags = tags;
 	}
 	
 	@Override
@@ -27,16 +27,17 @@ public class Hyperlink {
 		return String.format("Hyperlink[id=%d, link=%s", id, link);
 	}
 
-	public long getId() 			{ return id; }
-	public void setId(long id) 	{ this.id = id; }
-	 
+	public void setId(long id) 					   { this.id = id; }	 
 	public void setLink(String link) 			   { this.link = link; } 
 	public void setTags(String[] tags) 			   { this.tags = tags; } 
 	public void setLastEditedAt(Date lastEditedAt) { this.lastEditedAt = lastEditedAt; }
+	public void setAddedAt(Date addedAt) { this.addedAt = addedAt; }
 	
-	public String getLink() 		 { return link; }
-	public String[] getTags() 		 { return tags; }
-	public Date getLastEditedAt() 	 { return lastEditedAt; }
-	public Date getAddedAt() 	 	 { return addedAt; }
+
+	public long 	getId() 		  { return id; }
+	public String 	getLink() 		  { return link; }
+	public String[] getTags() 		  { return tags; }
+	public Date 	getLastEditedAt() { return lastEditedAt; }
+	public Date 	getAddedAt() 	  { return addedAt; }
 	
 }
