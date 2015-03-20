@@ -4,9 +4,13 @@ package model;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 //model class for describing a Hyperlink
 public class Hyperlink extends BaseEntity {
-
+	
+	private long id;
 	private String link;
 	private Date createdAt, lastEditedAt;
 	private List<Comment> comments;
@@ -18,7 +22,9 @@ public class Hyperlink extends BaseEntity {
 		this.link = link;
 	}
 	
-	public Hyperlink(long id, String link) {
+	@JsonCreator
+	public Hyperlink(@JsonProperty("id") long id,
+					 @JsonProperty("link") String link) {
 		this.id = id;
 		this.link = link;
 	}
@@ -33,6 +39,7 @@ public class Hyperlink extends BaseEntity {
 	public void setCreatedAt (Date createdAt) 		{ this.createdAt = createdAt; }
 	public void setComments(List<Comment> comments) { this.comments = comments; }
 	public void setMetaTags(List<MetaTag> metaTags) { this.metaTags = metaTags; }
+
 	
 	public String getLink() 		 	{ return link; }
 	public Date getLastEditedAt() 		{ return lastEditedAt; }
