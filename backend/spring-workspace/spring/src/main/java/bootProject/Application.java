@@ -2,16 +2,21 @@ package bootProject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
-import model.Customer;
+import model.Hyperlink;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+
+import db.HyperlinkDAO;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -25,33 +30,44 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-        System.out.println("Creating tables");
-        jdbcTemplate.execute("drop table customers if exists");
-        jdbcTemplate.execute("create table customers(" +
-                "id serial, first_name varchar(255), last_name varchar(255))");
-
-        String[] fullNames = new String[]{"John Woo", "Jeff Dean", "Josh Bloch", "Josh Long"};
-        for (String fullname : fullNames) {
-            String[] name = fullname.split(" ");
-            System.out.printf("Inserting customer record for %s %s\n", name[0], name[1]);
-            jdbcTemplate.update(
-                    "INSERT INTO customers(first_name,last_name) values(?,?)",
-                    name[0], name[1]);
-        }
-
-        System.out.println("Querying for customer records where first_name = 'Josh':");
-        List<Customer> results = jdbcTemplate.query(
-                "select id, first_name, last_name from customers where first_name = ?", new Object[] { "Josh" },
-                new RowMapper<Customer>() {
-                    @Override
-                    public Customer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new Customer(rs.getLong("id"), rs.getString("first_name"),
-                                rs.getString("last_name"));
-                    }
-                });
-
-        for (Customer customer : results) {
-            System.out.println(customer);
-        }
-    }
+    	
+    	//Test
+    	 ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
+         
+         //Get the HyperlinkDAO Bean
+         HyperlinkDAO HyperlinkDAO = ctx.getBean("hyperlinkDAO", HyperlinkDAO.class);
+         System.out.println("Created");
+          
+         //Run some tests for JDBC CRUD operations
+         Hyperlink hyp = new Hyperlink();
+         int rand = new Random().nextInt(1000);
+         hyp.setId(rand);
+         hyp.setLink("www.google.com");
+         hyp.setLastEditedAt(new Date());
+          
+         //Create
+         HyperlinkDAO.save(hyp);
+         System.out.println("Saved");
+//          
+         //Read
+         Hyperlink hyp1 = HyperlinkDAO.getById(rand);
+         System.out.println("Hyperlink Retrieved::"+hyp1);
+//          
+//         //Update
+//         hyp.setLink("CEO");
+//         HyperlinkDAO.update(hyp);
+//          
+         
+         //Get All
+//         List<Hyperlink> empList = HyperlinkDAO.getAll();
+//         System.out.println(empList);
+          
+//         //Delete
+//         HyperlinkDAO.deleteById(rand);
+//          
+//         //Close Spring Context
+//         ctx.close();
+//          
+//         System.out.println("DONE");
+   }
 }

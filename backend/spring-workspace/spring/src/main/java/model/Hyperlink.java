@@ -10,6 +10,8 @@ public class Hyperlink {
 	private String[] tags;
 	private Date addedAt, lastEditedAt;
 	
+	public Hyperlink() {}
+	
 	public Hyperlink(String link, Date addedAt, String[] tags) {
 		this.link = link;
 		this.addedAt = addedAt;
@@ -24,11 +26,12 @@ public class Hyperlink {
 	
 	@Override
 	public String toString() {
-		return String.format("Hyperlink[id=%d, link=%s", id, link);
+		return String.format("Hyperlink[id=%d, link=%s]", id, link);
 	}
 
 	public long getId() 			{ return id; }
 	public void setId(long id) 	{ this.id = id; }
+	public boolean isNew() {return (this.id == -1);} //change
 	 
 	public void setLink(String link) 			   { this.link = link; } 
 	public void setTags(String[] tags) 			   { this.tags = tags; } 
