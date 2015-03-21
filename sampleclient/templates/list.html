@@ -1,0 +1,17 @@
+<table>
+<!-- header -->
+<tr>
+<td> <b>Link </b> </td>
+<td> <b>Id </b> </td>
+
+
+{% for entry in entries %}
+<tr>
+<td> {{ entry['link'] }} </td>
+<td> {{ entry['id'] }} </td>
+<td> <a href="{{ url_for('modify',id=entry['id']) }}">Modify</a> </td>
+</tr>
+{% endfor %}
+</table>
+
+test
