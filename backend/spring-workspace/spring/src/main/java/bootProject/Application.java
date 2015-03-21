@@ -25,19 +25,19 @@ public class Application implements CommandLineRunner {
         SpringApplication.run(Application.class, args);
     }
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
-
     @Override
     public void run(String... strings) throws Exception {
     	
+  
     	//Test
     	 ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
          
          //Get the HyperlinkDAO Bean
          HyperlinkDAO HyperlinkDAO = ctx.getBean("hyperlinkDAO", HyperlinkDAO.class);
          System.out.println("Created");
-          
+         
+        // HyperlinkDAO.create();
+         
          //Run some tests for JDBC CRUD operations
          Hyperlink hyp = new Hyperlink();
          int rand = new Random().nextInt(1000);

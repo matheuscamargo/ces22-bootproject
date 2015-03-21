@@ -27,13 +27,6 @@ public class HyperlinkDAOJDBCTemplateImpl implements HyperlinkDAO{
     public void setDataSource(DataSource dataSource) {
     	this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
-    
-//	//for dependency injection
-//	@Autowired
-//	public HyperlinkDAOJDBCTemplateImpl(DataSource dataSource, NamedParameterJdbcTemplate
-//									  namedParameterJdbcTemplate) {
-//		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-//	}
 	
     @Override
 	public void save (Hyperlink hyperlink) {
@@ -80,7 +73,7 @@ public class HyperlinkDAOJDBCTemplateImpl implements HyperlinkDAO{
 	}
 	
 	public Hyperlink getById(long id) {
-		 String query = "select id from Employee where id = :id";
+		 String query = "select id from Hyperlink where id = :id";
 		 Map<String, Object> params = new HashMap<String, Object>();
 		 params.put("id", id);
 		 

@@ -8,7 +8,6 @@ import model.Comment;
 
 //CRUD operations
 public interface HyperlinkDAO {
-
 	public void save (Hyperlink hyperlink);
 	public void update (Hyperlink hyperlink);
 	public void deleteById (long id);
