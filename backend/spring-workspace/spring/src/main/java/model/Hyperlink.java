@@ -9,6 +9,8 @@ public class Hyperlink {
 	private String link;
 	private String[] tags;
 	private Date addedAt, lastEditedAt;
+	//private List<Comment> comments;
+	//private List<MetaTag> metaTags;
 	
 	public Hyperlink() {}
 	

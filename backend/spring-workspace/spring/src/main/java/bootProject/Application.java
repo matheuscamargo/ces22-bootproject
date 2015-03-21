@@ -28,7 +28,6 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
     	
-  
     	//Test
     	 ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
          

@@ -18,11 +18,24 @@ import java.sql.ResultSet;
 import model.Hyperlink;
 import model.MetaTag;
 
-public class HyperlinkDAOJDBCTemplateImpl implements HyperlinkDAO{
+public class HyperlinkDAOImpl implements HyperlinkDAO{
+	
+	//references to others databases
+	private CommentDAO commentDAO;
+	private MetaTagDAO metaTagDAO;
 	
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 	
-	//public HyperlinkDAOJDBCTemplateImpl () {}
+//	@Autowired
+//	public HyperlinkDAOImpl (DataSource dataSource, NamedParameterJdbcTemplate
+//							namedParameterJdbcTemplate, CommentDAO commentDAO,
+//							MetaTagDAO metaTagDAO) {
+//		
+//		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+//		
+//		this.commentDAO = commentDAO;
+//		this.metaTagDAO = metaTagDAO;
+//	}
 	
     public void setDataSource(DataSource dataSource) {
     	this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
