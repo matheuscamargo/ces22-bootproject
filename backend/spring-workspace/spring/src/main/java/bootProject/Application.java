@@ -8,6 +8,7 @@ import java.util.Random;
 
 import model.Comment;
 import model.Hyperlink;
+import model.MetaTag;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,6 +20,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import db.CommentDAO;
 import db.HyperlinkDAO;
+import db.MetaTagDAO;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -30,9 +32,37 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
     	//HyperlinkTest();
-    	CommentTest();
+    	//CommentTest();
+    	MetaTagTest();
    }
     
+	void MetaTagTest() {
+	    System.out.println("Starting Meta Test");
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-meta.xml");
+		System.out.println("Done loading ctx");
+	    //Get the MetaTagDAO Bean
+	    MetaTagDAO metaTagDAO = ctx.getBean("metaTagDAO", MetaTagDAO.class);
+	    System.out.println("Created");
+	    
+	    //Run some tests for JDBC CRUD operations
+	    MetaTag mtag = new MetaTag();
+	    int rand = new Random().nextInt(1000);
+	    mtag.setId(rand);
+	    mtag.setTag("Tag do hu3");
+	    
+	    //Create
+	    metaTagDAO.save(mtag);
+	    System.out.println("Saved MetaTag");
+	    
+	     //Update
+	     mtag.setTag("Mat eh gay");
+	     metaTagDAO.update(mtag);
+	    
+	    //Read
+	    List<MetaTag> com1 = metaTagDAO.getByHyperLinkId(0);
+	    System.out.println("MetaTags Retrieved::"+ com1.size());
+	}
+	
     void CommentTest() {
         System.out.println("Starting Comment Test");
     	ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-comment.xml");

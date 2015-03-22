@@ -3,12 +3,27 @@ package model;
 public class MetaTag extends BaseEntity{
 	
 	private String tag;
+	private long hyperlinkId;
 	
-	void setTag (String tag) {
+	public MetaTag () {}
+	public MetaTag (long id, String tag, long hyperlinkId) {
+		this.id = id;
+		this.tag = tag;
+		this.setHyperlinkId(hyperlinkId);
+	}
+	
+	public void setTag (String tag) {
 		this.tag = tag;
 	}
 	
-	String getTag () {
+	public String getTag () {
 		return this.tag;
+	}
+	
+	public long getHyperlinkId () {
+		return hyperlinkId;
+	}
+	public void setHyperlinkId (long hyperlinkId) {
+		this.hyperlinkId = hyperlinkId;
 	}
 }

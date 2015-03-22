@@ -11,13 +11,10 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import model.Comment;
-import model.Hyperlink;
-import model.MetaTag;
 
+//class that deals with database access to Comment table
 public class CommentDAOImpl implements CommentDAO{
 	private JdbcTemplate jdbcTemplate;
 	
@@ -87,11 +84,11 @@ public class CommentDAOImpl implements CommentDAO{
 		 
 		 List<Map<String,Object>> comRows = jdbcTemplate.queryForList(query, new Object[] {hyperLinkId});
 		 
-	     for(Map<String,Object> empRow : comRows){
+	     for(Map<String,Object> comRow : comRows){
 	            Comment com = new Comment();
-	            com.setId(Long.parseLong(String.valueOf(empRow.get("id"))));
-	            com.setComment(String.valueOf(empRow.get("")));
-	            com.setHyperLinkId(Long.parseLong(String.valueOf(empRow.get("id"))));
+	            com.setId(Long.parseLong(String.valueOf(comRow.get("id"))));
+	            com.setComment(String.valueOf(comRow.get("comment")));
+	            com.setHyperlinkId(Long.parseLong(String.valueOf(comRow.get("hyperlinkid"))));
 	            comList.add(com);
 	        }
 		 return comList;
@@ -103,7 +100,7 @@ class CommentMapper implements RowMapper {
 	  Comment comment = new Comment();    
 	  comment.setId(rs.getLong("id"));    
 	  comment.setComment(rs.getString("comment"));
-	  comment.setHyperLinkId(rs.getLong(("hyperlinkid")));
+	  comment.setHyperlinkId(rs.getLong(("hyperlinkid")));
 	  return comment;    
 	 }
 

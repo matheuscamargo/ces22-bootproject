@@ -8,8 +8,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -18,6 +16,7 @@ import java.sql.ResultSet;
 import model.Hyperlink;
 import model.MetaTag;
 
+//class that deals with database access to Hyperlink table
 public class HyperlinkDAOImpl implements HyperlinkDAO{
 	
 	//references to others databases
