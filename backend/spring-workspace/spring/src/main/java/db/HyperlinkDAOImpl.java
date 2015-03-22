@@ -52,7 +52,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 			int out = namedParameterJdbcTemplate.update(query, params);
 
 			if(out !=0) System.out.println("Saved hyperlink");
-			else 		System.out.println("Unable to ave hyperlink");
+			else 		System.out.println("Unable to Save hyperlink");
 	//	}
 		//else {
 	//		System.out.println("Already inside the db");
@@ -114,4 +114,4 @@ class HyperlinkMapper implements RowMapper {
 	  return hyperlink;    
 	 }
 
-	}    
+}    
