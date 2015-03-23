@@ -15,7 +15,7 @@ import org.springframework.jdbc.core.RowMapper;
 import model.Comment;
 
 //class that deals with database access to Comment table
-public class CommentDAOImpl implements CommentDAO{
+public class CommentDAOImpl implements CommentDAO {
 	private JdbcTemplate jdbcTemplate;
 	
     @Autowired

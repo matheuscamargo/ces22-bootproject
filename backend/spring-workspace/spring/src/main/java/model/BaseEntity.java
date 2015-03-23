@@ -11,4 +11,8 @@ public class BaseEntity {
 	public void setId (long id) {
 		this.id = id;
 	}
+	
+	public boolean isNew () {
+		return true;
+	}
 }

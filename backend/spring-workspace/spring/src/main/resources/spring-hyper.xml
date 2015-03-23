@@ -2,9 +2,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
- 
-    <bean id="hyperlinkDAO" class="db.HyperlinkDAOImpl">
-        <property name="dataSource" ref="dataSource" />
+	
+	<!-- Include Resources from other xml files  -->
+	<import resource="spring-comment.xml"/>
+	<import resource="spring-meta.xml"/>
+    
+    <bean id="hyperlinkDAO" class="db.HyperlinkDAOImpl" autowire="constructor">
+  	  	<constructor-arg ref="dataSource"/>
     </bean>
     
  	 <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">

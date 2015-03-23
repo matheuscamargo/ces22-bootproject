@@ -31,11 +31,12 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-    	//HyperlinkTest();
+    	HyperlinkTest();
     	//CommentTest();
-    	MetaTagTest();
+    	//MetaTagTest();
    }
     
+    //test methods
 	void MetaTagTest() {
 	    System.out.println("Starting Meta Test");
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-meta.xml");

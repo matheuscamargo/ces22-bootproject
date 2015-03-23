@@ -14,5 +14,5 @@ public interface HyperlinkDAO {
 	
 	public Hyperlink getById(long id);
 	public List<Hyperlink> getAllWithTag(MetaTag tag);
-	public List<Hyperlink> getAll();
+	public List<Hyperlink> getAllWithLink(String link);
 }

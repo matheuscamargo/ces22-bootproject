@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -15,44 +16,60 @@ import java.sql.ResultSet;
 
 import model.Hyperlink;
 import model.MetaTag;
+import model.Comment;
 
 //class that deals with database access to Hyperlink table
 public class HyperlinkDAOImpl implements HyperlinkDAO{
 	
-	//references to others databases
+	private long hyperlinkIdCounter = 0;
+	
+	//references to others tables
 	private CommentDAO commentDAO;
 	private MetaTagDAO metaTagDAO;
 	
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 	
-//	@Autowired
-//	public HyperlinkDAOImpl (DataSource dataSource, NamedParameterJdbcTemplate
-//							namedParameterJdbcTemplate, CommentDAO commentDAO,
-//							MetaTagDAO metaTagDAO) {
-//		
-//		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-//		
-//		this.commentDAO = commentDAO;
-//		this.metaTagDAO = metaTagDAO;
-//	}
-	
-    public void setDataSource(DataSource dataSource) {
-    	this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-    }
+	@Autowired
+	public HyperlinkDAOImpl (DataSource dataSource, CommentDAO commentDAO,
+							MetaTagDAO metaTagDAO) {
+		
+		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+		
+		this.commentDAO = commentDAO;
+		this.metaTagDAO = metaTagDAO;
+	}
 	
     @Override
 	public void save (Hyperlink hyperlink) {
     	String query = "insert into Hyperlink (id, link) values (:id, :link)";
-    	System.out.println("Testing");
+    	
     	Map<String, Object> params = new HashMap<String, Object>();
-    	params.put("id", String.valueOf(hyperlink.getId()));
+    	params.put("id", ++hyperlinkIdCounter);
     	params.put("link", hyperlink.getLink());
-		//if (hyperlink.isNew()) {
-			int out = namedParameterJdbcTemplate.update(query, params);
-
-			if(out !=0) System.out.println("Saved hyperlink");
-			else 		System.out.println("Unable to Save hyperlink");
-	//	}
+		int out = namedParameterJdbcTemplate.update(query, params);
+		
+		//sucessfully executed query
+		if(out !=0) {
+			System.out.println("Saved hyperlink");
+	    	//save comments
+			
+	    	for (Comment comment: hyperlink.getComments()) {
+	    		comment.setHyperlinkId(hyperlinkIdCounter);
+	    		commentDAO.save(comment);
+	    	}
+	    	
+	    	//save metatags
+	    	for (MetaTag metaTag: hyperlink.getMetaTags()) {
+	    		metaTag.setHyperlinkId(hyperlinkIdCounter);
+	    		metaTagDAO.save(metaTag);
+	    	}
+		}
+		else 	{
+			--hyperlinkIdCounter;
+			System.out.println("Unable to Save hyperlink");
+		}
+		
+		//TODO
 		//else {
 	//		System.out.println("Already inside the db");
 	//	}
@@ -97,6 +114,11 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	public List<Hyperlink> getAllWithTag(MetaTag tag) {
 		return new ArrayList<Hyperlink>(); //dummy
 	}
+	
+	public List<Hyperlink> getAllWithLink(String link) {
+		return new ArrayList<Hyperlink>(); //dummy
+	}
+	
 	public List<Hyperlink> getAll() {
         String query = "select * from Hyperlink";
         List<Hyperlink> hypList = (List<Hyperlink>) namedParameterJdbcTemplate.query(query, new HyperlinkMapper());

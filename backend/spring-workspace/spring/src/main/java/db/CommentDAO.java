@@ -11,5 +11,5 @@ public interface CommentDAO {
 	public void update (Comment comment);
 	public void deleteById (long id);
  	public Comment getById(long id);
- 	public List<Comment> getByHyperLinkId(long hypId);
+ 	public List<Comment> getByHyperLinkId(long hyperLinkId);
 }

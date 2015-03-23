@@ -1,16 +1,17 @@
 package model;
 
+
 import java.util.Date;
+import java.util.List;
 
 //model class for describing a Hyperlink
-public class Hyperlink {
-	
-	private long id;
+public class Hyperlink extends BaseEntity {
+
 	private String link;
 	private String[] tags;
 	private Date addedAt, lastEditedAt;
-	//private List<Comment> comments;
-	//private List<MetaTag> metaTags;
+	private List<Comment> comments;
+	private List<MetaTag> metaTags;
 	
 	public Hyperlink() {}
 	
@@ -30,18 +31,17 @@ public class Hyperlink {
 	public String toString() {
 		return String.format("Hyperlink[id=%d, link=%s]", id, link);
 	}
-
-	public long getId() 			{ return id; }
-	public void setId(long id) 	{ this.id = id; }
-	public boolean isNew() {return (this.id == -1);} //change
 	 
-	public void setLink(String link) 			   { this.link = link; } 
-	public void setTags(String[] tags) 			   { this.tags = tags; } 
-	public void setLastEditedAt(Date lastEditedAt) { this.lastEditedAt = lastEditedAt; }
+	public void setLink(String link) 			   	{ this.link = link; } 
+	public void setTags(String[] tags) 			   	{ this.tags = tags; } 
+	public void setLastEditedAt(Date lastEditedAt) 	{ this.lastEditedAt = lastEditedAt; }
+	public void setComments(List<Comment> comments) { this.comments = comments; }
+	public void setMetaTags(List<MetaTag> metaTags) { this.metaTags = metaTags; }
 	
-	public String getLink() 		 { return link; }
-	public String[] getTags() 		 { return tags; }
-	public Date getLastEditedAt() 	 { return lastEditedAt; }
-	public Date getAddedAt() 	 	 { return addedAt; }
-	
+	public String getLink() 		 	{ return link; }
+	public String[] getTags() 		 	{ return tags; }
+	public Date getLastEditedAt() 		{ return lastEditedAt; }
+	public Date getAddedAt() 	 	 	{ return addedAt; }
+	public List<Comment> getComments() 	{ return comments; }
+	public List<MetaTag> getMetaTags() 	{ return metaTags; }
 }
