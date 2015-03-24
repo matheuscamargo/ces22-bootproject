@@ -8,6 +8,7 @@ public interface MetaTagDAO {
 	public void save (MetaTag metaTag);
 	public void update (MetaTag metaTag);
 	public void deleteById (long id);
+	public void deleteByHyperlinkId (long hyperlinkId);
  	public MetaTag getById(long id);
  	public List<MetaTag> getByHyperLinkId(long hypId);
 }

@@ -10,6 +10,7 @@ public interface CommentDAO {
 	public void save (Comment comment);
 	public void update (Comment comment);
 	public void deleteById (long id);
+	public void deleteByHyperlinkId (long id);
  	public Comment getById(long id);
  	public List<Comment> getByHyperLinkId(long hyperLinkId);
 }

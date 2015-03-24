@@ -2,6 +2,7 @@ package bootProject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -100,38 +101,57 @@ public class Application implements CommandLineRunner {
         HyperlinkDAO HyperlinkDAO = ctx.getBean("hyperlinkDAO", HyperlinkDAO.class);
         System.out.println("Created");
         
-       // HyperlinkDAO.create();
-        
+       List<Comment> comList = new ArrayList<Comment>();
+       comList.add(new Comment("Testing comment 1"));
+       comList.add(new Comment("Testing comment 2"));
+       
+       List<MetaTag> mtList = new ArrayList<MetaTag>();
+       mtList.add(new MetaTag("meta tag"));
+       mtList.add(new MetaTag("meta tag 2"));
+       
         //Run some tests for JDBC CRUD operations
         Hyperlink hyp = new Hyperlink();
-        int rand = new Random().nextInt(1000);
-        hyp.setId(rand);
-        hyp.setLink("www.google.com");
-        hyp.setLastEditedAt(new Date());
+        hyp.setLink("www.googletesting.com");
+        hyp.setComments(comList);
+        hyp.setMetaTags(mtList);
          
         //Create
         HyperlinkDAO.save(hyp);
         System.out.println("Saved");
 //         
         //Read
-        Hyperlink hyp1 = HyperlinkDAO.getById(rand);
+        Hyperlink hyp1 = HyperlinkDAO.getById(11);
         System.out.println("Hyperlink Retrieved::"+hyp1);
 //         
-//        //Update
-//        hyp.setLink("CEO");
-//        HyperlinkDAO.update(hyp);
-//         
+//      //Update
+        hyp.setId(11);
+        hyp.setLink("www.ocu.com");
+        List<MetaTag> mtList2 = new ArrayList<MetaTag>();
+        mtList2.add(new MetaTag("meta tag UPDATE"));
+        mtList2.add(new MetaTag("meta tag UPDATE 2"));
+        hyp.setMetaTags(mtList2);
+        HyperlinkDAO.update(hyp);
+         
         
         //Get All
-//        List<Hyperlink> empList = HyperlinkDAO.getAll();
-//        System.out.println(empList);
+//        List<Hyperlink> hypList = HyperlinkDAO.getAll();
+//        System.out.println("Number of results = " + hypList.size());
+//        for (Hyperlink hype : hypList) {
+//        	System.out.println(hype);
+//        	for (Comment com: hype.getComments()) {
+//        		System.out.println("\t" + com.getComment());
+//        	}
+//        	for (MetaTag com: hype.getMetaTags()) {
+//        		System.out.println("\t" + com.getTag());
+//        	}
+//        }
          
 //        //Delete
-//        HyperlinkDAO.deleteById(rand);
+        HyperlinkDAO.deleteById(124);
 //         
 //        //Close Spring Context
-//        ctx.close();
+        ctx.close();
 //         
-//        System.out.println("DONE");
+        System.out.println("DONE");
     }
 }

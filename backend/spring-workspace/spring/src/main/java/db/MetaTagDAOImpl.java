@@ -25,10 +25,9 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 	
     @Override
 	public void save (MetaTag metaTag) {
-		String query = "insert into MetaTag (id, tag, hyperlinkid) values (?,?,?)";
+		String query = "insert into MetaTag (tag, hyperlinkid) values (?,?)";
 	
-        Object[] args = new Object[] {metaTag.getId(),
-        							  metaTag.getTag(),
+        Object[] args = new Object[] {metaTag.getTag(),
         							  metaTag.getHyperlinkId()};
          
         int out = jdbcTemplate.update(query, args);
@@ -40,11 +39,10 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 	
     @Override
 	public void update (MetaTag metaTag) {
-        String query = "update MetaTag set id=?, tag=?, hyperlinkid=? where id=?";
+        String query = "update MetaTag set tag=?, hyperlinkid=? where id=?";
 
-        Object[] args = new Object[] {metaTag.getId(),
-				  metaTag.getTag(),
-				  metaTag.getHyperlinkId(),
+        Object[] args = new Object[] {metaTag.getTag(),
+        						      metaTag.getHyperlinkId(),
 				  metaTag.getId()};
          
         int out = jdbcTemplate.update(query, args);
@@ -65,6 +63,18 @@ public class MetaTagDAOImpl implements MetaTagDAO{
         }
         else 
         	System.out.println("No MetaTag found with id=" + id);
+	}
+    
+    @Override
+	public void deleteByHyperlinkId (long hyperlinkId) {
+        String query = "delete from MetaTag where hyperlinkId=?";
+         
+        int out = jdbcTemplate.update(query, hyperlinkId);
+        if(out !=0){
+            System.out.println("MetaTag deleted with id= " + hyperlinkId);
+        }
+        else 
+        	System.out.println("No MetaTag found with id=" + hyperlinkId);
 	}
 	
     @Override

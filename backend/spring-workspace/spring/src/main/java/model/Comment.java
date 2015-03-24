@@ -5,6 +5,11 @@ public class Comment extends BaseEntity {
 	private long hyperlinkId;
 	
 	public Comment () {}
+	
+	public Comment (String comment) {
+		this.comment = comment;
+	}
+	
 	public Comment (long id, String comment, long hyperlinkId) {
 		this.id = id;
 		this.comment = comment;

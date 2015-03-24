@@ -25,10 +25,9 @@ public class CommentDAOImpl implements CommentDAO {
 	
     @Override
 	public void save (Comment comment) {
-		String query = "insert into Comment (id, comment, hyperlinkid) values (?,?,?)";
+		String query = "insert into Comment (comment, hyperlinkid) values (?,?)";
 	
-        Object[] args = new Object[] {comment.getId(),
-        							  comment.getComment(),
+        Object[] args = new Object[] {comment.getComment(),
         							  comment.getHyperLinkId()};
          
         int out = jdbcTemplate.update(query, args);
@@ -40,10 +39,9 @@ public class CommentDAOImpl implements CommentDAO {
 	
     @Override
 	public void update (Comment comment) {
-        String query = "update Comment set id=?, comment=?, hyperlinkid=? where id=?";
+        String query = "update Comment set comment=?, hyperlinkid=? where id=?";
 
-        Object[] args = new Object[] {comment.getId(),
-				  comment.getComment(),
+        Object[] args = new Object[] {comment.getComment(),
 				  comment.getHyperLinkId(),
 				  comment.getId()};
          
@@ -66,6 +64,17 @@ public class CommentDAOImpl implements CommentDAO {
         else 
         	System.out.println("No Comment found with id=" + id);
 	}
+    
+    public void deleteByHyperlinkId (long hyperlinkId) {
+    	 String query = "delete from Comment where hyperlinkId=?";
+         
+         int out = jdbcTemplate.update(query, hyperlinkId);
+         if(out !=0){
+             System.out.println("Comment deleted with hypid= " + hyperlinkId);
+         }
+         else 
+         	System.out.println("No Comment found with hypid=" + hyperlinkId);
+    }
 	
     @Override
 	public Comment getById(long id) {
