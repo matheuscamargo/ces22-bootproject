@@ -106,12 +106,14 @@ public class Application implements CommandLineRunner {
        comList.add(new Comment("Testing comment 2"));
        
        List<MetaTag> mtList = new ArrayList<MetaTag>();
-       mtList.add(new MetaTag("meta tag"));
-       mtList.add(new MetaTag("meta tag 2"));
+       mtList.add(new MetaTag("Search for me"));
+       mtList.add(new MetaTag("Hello"));
        
         //Run some tests for JDBC CRUD operations
         Hyperlink hyp = new Hyperlink();
-        hyp.setLink("www.googletesting.com");
+        hyp.setLink("www.milhouseviado.com");
+        hyp.setCreatedAt(new Date());
+        hyp.setLastEditedAt(new Date());
         hyp.setComments(comList);
         hyp.setMetaTags(mtList);
          
@@ -120,12 +122,12 @@ public class Application implements CommandLineRunner {
         System.out.println("Saved");
 //         
         //Read
-        Hyperlink hyp1 = HyperlinkDAO.getById(11);
+        Hyperlink hyp1 = HyperlinkDAO.getById(1);
         System.out.println("Hyperlink Retrieved::"+hyp1);
 //         
 //      //Update
-        hyp.setId(11);
-        hyp.setLink("www.ocu.com");
+        hyp.setId(5);
+        hyp.setLink("www.ocu1.com");
         List<MetaTag> mtList2 = new ArrayList<MetaTag>();
         mtList2.add(new MetaTag("meta tag UPDATE"));
         mtList2.add(new MetaTag("meta tag UPDATE 2"));
@@ -145,9 +147,35 @@ public class Application implements CommandLineRunner {
 //        		System.out.println("\t" + com.getTag());
 //        	}
 //        }
+        
+        //Get All with Tag
+//	      List<Hyperlink> hypList = HyperlinkDAO.getAllWithTag(new MetaTag("Hello"));
+//	      System.out.println("Number of results = " + hypList.size());
+//	      for (Hyperlink hype : hypList) {
+//	      	System.out.println(hype);
+//	      	for (Comment com: hype.getComments()) {
+//	      		System.out.println("\t" + com.getComment());
+//	      	}
+//	      	for (MetaTag com: hype.getMetaTags()) {
+//	      		System.out.println("\t" + com.getTag());
+//	      	}
+//	      }
+        
+        //Get All with Link
+	      List<Hyperlink> hypList = HyperlinkDAO.getAllWithLink("www.milhouseviado.com");
+	      System.out.println("Number of results = " + hypList.size());
+	      for (Hyperlink hype : hypList) {
+	      	System.out.println(hype);
+	      	for (Comment com: hype.getComments()) {
+	      		System.out.println("\t" + com.getComment());
+	      	}
+	      	for (MetaTag com: hype.getMetaTags()) {
+	      		System.out.println("\t" + com.getTag());
+	      	}
+	      }
          
 //        //Delete
-        HyperlinkDAO.deleteById(124);
+        HyperlinkDAO.deleteById(3);
 //         
 //        //Close Spring Context
         ctx.close();

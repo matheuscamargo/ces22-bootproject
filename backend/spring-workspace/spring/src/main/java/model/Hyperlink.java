@@ -8,8 +8,7 @@ import java.util.List;
 public class Hyperlink extends BaseEntity {
 
 	private String link;
-	private String[] tags;
-	private Date addedAt, lastEditedAt;
+	private Date createdAt, lastEditedAt;
 	private List<Comment> comments;
 	private List<MetaTag> metaTags;
 	
@@ -17,9 +16,8 @@ public class Hyperlink extends BaseEntity {
 	
 	public Hyperlink(String link, Date addedAt, String[] tags) {
 		this.link = link;
-		this.addedAt = addedAt;
+		this.createdAt = addedAt;
 		this.lastEditedAt = addedAt;
-		this.tags = tags;
 	}
 	
 	public Hyperlink(long id, String link) {
@@ -33,15 +31,14 @@ public class Hyperlink extends BaseEntity {
 	}
 	 
 	public void setLink(String link) 			   	{ this.link = link; } 
-	public void setTags(String[] tags) 			   	{ this.tags = tags; } 
 	public void setLastEditedAt(Date lastEditedAt) 	{ this.lastEditedAt = lastEditedAt; }
+	public void setCreatedAt (Date createdAt) 		{ this.createdAt = createdAt; }
 	public void setComments(List<Comment> comments) { this.comments = comments; }
 	public void setMetaTags(List<MetaTag> metaTags) { this.metaTags = metaTags; }
 	
 	public String getLink() 		 	{ return link; }
-	public String[] getTags() 		 	{ return tags; }
 	public Date getLastEditedAt() 		{ return lastEditedAt; }
-	public Date getAddedAt() 	 	 	{ return addedAt; }
+	public Date getAddedAt() 	 	 	{ return createdAt; }
 	public List<Comment> getComments() 	{ return comments; }
 	public List<MetaTag> getMetaTags() 	{ return metaTags; }
 }
