@@ -11,6 +11,9 @@ public class MetaTag {
 		id = 99;
 		linkId = 99;
 	}
+		
+	@Override
+	public String toString() { return String.format("Tag[id=%d linkId=%d name= %s]", id, linkId, name); }
 	
 	public String getName() { return name; }
 	public long getId() { return id; }

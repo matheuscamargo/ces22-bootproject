@@ -40,17 +40,17 @@ public class Application implements CommandLineRunner {
         }
 
         System.out.println("Querying for customer records where first_name = 'Josh':");
-        List<Hyperlink> results = jdbcTemplate.query(
-                "select id, first_name, last_name from customers where first_name = ?", new Object[] { "Josh" },
-                new RowMapper<Hyperlink>() {
-                    @Override
-                    public Hyperlink mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new Hyperlink(1, "www.google.com", null);
-                    }
-                });
-
-        for (Hyperlink customer : results) {
-            System.out.println(customer);
-        }
+//        List<Hyperlink> results = jdbcTemplate.query(
+//                "select id, first_name, last_name from customers where first_name = ?", new Object[] { "Josh" },
+//                new RowMapper<Hyperlink>() {
+//                    @Override
+//                    public Hyperlink mapRow(ResultSet rs, int rowNum) throws SQLException {
+//                        return new Hyperlink(1, "www.google.com", null);
+//                    }
+//                });
+//
+//        for (Hyperlink customer : results) {
+//            System.out.println(customer);
+//        }
     }
 }
