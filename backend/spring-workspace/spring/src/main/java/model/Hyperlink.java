@@ -12,17 +12,23 @@ public class Hyperlink extends BaseEntity {
 	
 	private long id;
 	private String link;
+
 	private Date createdAt, lastEditedAt;
 	private List<Comment> comments;
 	private List<MetaTag> metaTags;
 	
-	public Hyperlink() {}
+	public Hyperlink() {
+		id = 98;
+		link = null;
+		metaTags = null;
+		createdAt = new Date();
+		lastEditedAt = new Date();
+	}
 	
 	public Hyperlink(String link) {
 		this.link = link;
 	}
 	
-	@JsonCreator
 	public Hyperlink(@JsonProperty("id") long id,
 					 @JsonProperty("link") String link) {
 		this.id = id;
@@ -39,7 +45,8 @@ public class Hyperlink extends BaseEntity {
 	public void setCreatedAt (Date createdAt) 		{ this.createdAt = createdAt; }
 	public void setComments(List<Comment> comments) { this.comments = comments; }
 	public void setMetaTags(List<MetaTag> metaTags) { this.metaTags = metaTags; }
-
+	
+	public void addTag(MetaTag tag) { metaTags.add(tag); }
 	
 	public String getLink() 		 	{ return link; }
 	public Date getLastEditedAt() 		{ return lastEditedAt; }

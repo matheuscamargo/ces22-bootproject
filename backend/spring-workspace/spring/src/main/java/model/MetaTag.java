@@ -5,7 +5,11 @@ public class MetaTag extends BaseEntity{
 	private String tag;
 	private long hyperlinkId;
 	
-	public MetaTag () {}
+	public MetaTag () {
+		tag = null;
+		id = 99;
+		hyperlinkId = 99;
+	}
 	
 	public MetaTag (String tag) {
 		this.tag = tag; 
