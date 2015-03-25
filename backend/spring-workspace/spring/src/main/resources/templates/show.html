@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Hyperlink database - Server view</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1 th:if="${exists}" th:text="'Showing content of entry with id ' + ${hyperlink.id}"></h1>	
+	<h1 th:if="${not exists}" th:text="'Entry with id ' + ${id} + ' not found!'"></h1> 
+	<br/>		
+	<a th:if="${exists}" href="addtag.html" th:href="@{/addtag/{id}(id=${hyperlink.id})}" th:text="'Add tag'" ></a>
+	<ul th:if="${exists}">
+		<li th:text="'id: ' + ${hyperlink.id}"></li>
+		<li th:text="'Link: ' + ${hyperlink.link}"></li>
+		<li>Tags: 
+			<ul>
+				<li th:each="tag : ${hyperlink.tags}" th:text="${tag}"></li>
+			</ul>
+		</li>
+		<li th:text="'Added at: ' + ${hyperlink.addedAt}"></li>
+		<li th:text="'Last edited at: ' + ${hyperlink.lastEditedAt}"></li>
+	</ul>
+	<a href="index.html" th:href="@{/}" th:text="'Main page'" ></a>
+</body>
+</html>

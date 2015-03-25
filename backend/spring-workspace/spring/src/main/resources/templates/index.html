@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Hyperlink database - Server view</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1>List of registered hyperlinks</h1>	
+	<a href="add.html" th:href="@{/add}" th:text="'Add new hyperlink'"></a>
+	<br/><br/>
+	<span th:if="${#lists.isEmpty(hyperlinksList)}" th:text="'Hyperlink list is empty'"></span>
+	<table th:if="${not #lists.isEmpty(hyperlinksList)}">
+		<tr>
+			<th>Link</th>
+			<th>Tags</th>
+			<th></th>
+			<th></th>
+		</tr>
+		<tr th:each="hyperlink : ${hyperlinksList}">
+			<td><a href="show.html" th:href="@{/show/{id}(id=${hyperlink.id})}" th:text="${hyperlink.link}"></a></td>
+			<td><span th:each="tag : ${hyperlink.tags}" th:text="${tag} + ','"></span></td>
+			<td><a href="edit.html" th:href="@{/edit/{id}(id=${hyperlink.id})}" th:text="Edit" ></a></td>
+			<td><a href="delete.html" th:href="@{/delete/{id}(id=${hyperlink.id})}" th:text="Delete" ></a></td>
+		</tr>	
+	</table>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Hyperlink database - Server view</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1>
+		<span  th:if="${deleted}" th:text="'Hyperlink of id ' + ${id} + ' succesfully deleted!'"></span>
+		<span  th:unless="${deleted}" th:text="'Hyperlink of id ' + ${id} + ' not found!'"></span>
+	</h1>	
+	<br/> 
+	<a href="index.html" th:href="@{/}" th:text="'Main page'" ></a>
+	
+</body>
+</html>
