@@ -32,14 +32,14 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-    	System.out.println("SELECT h.id, h.link, h.created, h.lastEdited,"
-        		+ " 0 as type, mt.tag as field, mt.id as cid  from  Hyperlink h"
-        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId"
-        		+ " UNION"
-        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
-        		+ " 1 as type, c.comment as field, c.id as cid from  Hyperlink h"
-        		+ " inner join Comment c on h.id = c.hyperlinkId");
-    	HyperlinkTest();
+//    	System.out.println("SELECT h.id, h.link, h.created, h.lastEdited,"
+//        		+ " 0 as type, mt.tag as field, mt.id as cid  from  Hyperlink h"
+//        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId"
+//        		+ " UNION"
+//        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
+//        		+ " 1 as type, c.comment as field, c.id as cid from  Hyperlink h"
+//        		+ " inner join Comment c on h.id = c.hyperlinkId");
+//    	HyperlinkTest();
     	//CommentTest();
     	//MetaTagTest();
    }
