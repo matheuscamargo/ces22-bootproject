@@ -26,9 +26,7 @@ public class HyperlinkController {
     @RequestMapping(value = "/add", method = RequestMethod.GET) //POST
     public Hyperlink addHyperlink(@RequestParam(value="name", defaultValue="World") String name) {
     	logger.info("Start addHyperlink.");
-    	Date now = new Date();
-    	String[] tags = new String[]{"tag1", "tag2", "tag3"};
-        return new Hyperlink("www.google.com", now,tags);
+        return new Hyperlink("www.google.com");
     }
     
     @RequestMapping(value = "/query", method = RequestMethod.GET)

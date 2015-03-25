@@ -14,10 +14,8 @@ public class Hyperlink extends BaseEntity {
 	
 	public Hyperlink() {}
 	
-	public Hyperlink(String link, Date addedAt, String[] tags) {
+	public Hyperlink(String link) {
 		this.link = link;
-		this.createdAt = addedAt;
-		this.lastEditedAt = addedAt;
 	}
 	
 	public Hyperlink(long id, String link) {
