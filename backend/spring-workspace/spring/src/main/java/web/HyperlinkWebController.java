@@ -1,18 +1,14 @@
 package web;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import model.Comment;
 import model.Hyperlink;
 import model.MetaTag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,186 +16,180 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import db.CommentDAO;
+import db.HyperlinkDAO;
+import db.MetaTagDAO;
+
 //@RestController
 @Controller
 public class HyperlinkWebController{
 	
 	private static final Logger logger = LoggerFactory.getLogger(HyperlinkWebController.class);
-    
-    private Map<Long, Hyperlink> dataBase = new HashMap<Long, Hyperlink>();
-    
-    private boolean firstTime = true; // GAMBIARRA
+        
+  	ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring/spring-hyper.xml");
+     
+    //Get DAO beans
+    HyperlinkDAO hyperlinkDAO = ctx.getBean("hyperlinkDAO", HyperlinkDAO.class);
+    MetaTagDAO metaTagDAO = ctx.getBean("metaTagDAO", MetaTagDAO.class);
+    CommentDAO commentDAO = ctx.getBean("commentDAO", CommentDAO.class);
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/add", method = RequestMethod.GET) // OK
     public String addHyperlinkForm(Model model) {
-    	logger.info("Start addHyperlink.");
+    	logger.info("Start addHyperlink GET.");
     	model.addAttribute("hyperlink", new Hyperlink());
     	model.addAttribute("error", 0);
         return "add";
     }
     
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/add", method = RequestMethod.POST) // OK
     public String addHyperlinkSubmit(@ModelAttribute Hyperlink hyperlink, Model model) {
-    	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
-    	if (dataBase.containsKey(hyperlink.getId())) {
+    	logger.info("Start addHyperlink POST.");
+    	logger.info(hyperlink.toString());
+    	try {
+    		long id = hyperlinkDAO.save(hyperlink);
+    		model.addAttribute("hyperlink", hyperlinkDAO.getById(id));
+    		model.addAttribute("exists", true);
+        	return "redirect:/show/" + id;
+    	}
+    	catch (DataAccessException ex) {
     		model.addAttribute("error", 1);
     		return "add";
     	}
-    	else {
-    		hyperlink.setLastEditedAt(new Date());
-    		dataBase.put(hyperlink.getId(), hyperlink);
-    		model.addAttribute("hyperlink", hyperlink);
-    		model.addAttribute("exists", true);
-        	return "show";
-    	}
     }
     
-    @RequestMapping(value = "/addtag/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/addtag/{id}", method = RequestMethod.GET) // OK
     public String addTagForm(@PathVariable("id") long id, Model model) {
-    	if (dataBase.containsKey(id)) {
-        	Hyperlink hyperlink = dataBase.get(id);
-    		model.addAttribute("hyperlink", hyperlink);
-    		MetaTag tag = new MetaTag();
-    		tag.setId(0);
-    		tag.setHyperlinkId(hyperlink.getId());
+    	logger.info("Start addTag GET.");    	
+    	try {
+        	Hyperlink hyperlink = hyperlinkDAO.getById(id);
+        	MetaTag tag = new MetaTag();
+        	tag.setHyperlinkId(id);
     		model.addAttribute("tag", tag);
-        	model.addAttribute("error", 0);
+    		model.addAttribute("hyperlink", hyperlink);
+        	model.addAttribute("error", 0);    		
+    	}
+    	catch (EmptyResultDataAccessException ex) {
+    		model.addAttribute("error", 1);
+    	}
+    	return "addtag";
+    }
+    
+    @RequestMapping(value = "/addtag", method = RequestMethod.POST) // OK
+    public String addTagSubmit(@ModelAttribute MetaTag tag, Model model) {
+    	logger.info("Start addTag POST.");
+    	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
+    	try {
+    		metaTagDAO.save(tag);
+    		model.addAttribute("hyperlink", hyperlinkDAO.getById(tag.getHyperlinkId()));
+    		model.addAttribute("error", 0);
+    		return "redirect:/show/" + tag.getHyperlinkId();
+    	}
+    	catch (DataAccessException ex) {
+    		model.addAttribute("error", 2);
     		return "addtag";
     	}
-    	else {
-    		model.addAttribute("error", 1);
-        	return "addtag";
-    	}
     }
     
-    @RequestMapping(value = "/addtag", method = RequestMethod.POST)
-    public String addTagSubmit(@ModelAttribute MetaTag tag, Model model) {
-    	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
-    	long id = tag.getHyperlinkId();
-    	if (dataBase.containsKey(id)) {
-    		model.addAttribute("error", 0);
-    		Hyperlink hyperlink = dataBase.get(tag.getHyperlinkId());
-    		hyperlink.addTag(tag);
-    		model.addAttribute("hyperlink",	dataBase.get(tag.getHyperlinkId()));
-    		model.addAttribute("exists", true);
-    		return "redirect:/show/" + id;
-    	}
-    	else {
-        	return "index";
-    	}
-    }
-    
-    @RequestMapping(value = "/addcomment/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/addcomment/{id}", method = RequestMethod.GET) // OK
     public String addCommentForm(@PathVariable("id") long id, Model model) {
-    	if (dataBase.containsKey(id)) {
-        	Hyperlink hyperlink = dataBase.get(id);
-    		model.addAttribute("hyperlink", hyperlink);
-    		Comment comment = new Comment();
-    		comment.setId(0);
-    		comment.setHyperlinkId(hyperlink.getId());
+    	logger.info("Start addCommand GET.");
+    	try {
+        	Hyperlink hyperlink = hyperlinkDAO.getById(id);
+        	Comment comment = new Comment();
+        	comment.setHyperlinkId(id);
     		model.addAttribute("comment", comment);
-        	model.addAttribute("error", 0);
+    		model.addAttribute("hyperlink", hyperlink);
+        	model.addAttribute("error", 0);    		
+    	}
+    	catch (EmptyResultDataAccessException ex) {
+    		model.addAttribute("error", 1);
+    	}
+    	return "addcomment";
+    }
+    
+    @RequestMapping(value = "/addcomment", method = RequestMethod.POST) // OK
+    public String addCommentSubmit(@ModelAttribute Comment comment, Model model) {
+    	logger.info("Start addCommand POST.");
+    	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
+    	try {
+    		commentDAO.save(comment);
+    		model.addAttribute("hyperlink", hyperlinkDAO.getById(comment.getHyperlinkId()));
+    		model.addAttribute("error", 0);
+    		return "redirect:/show/" + comment.getHyperlinkId();
+    	}
+    	catch (DataAccessException ex) {
+    		model.addAttribute("error", 2);
     		return "addcomment";
     	}
-    	else {
-    		model.addAttribute("error", 1);
-        	return "addcomment";
-    	}
     }
     
-    @RequestMapping(value = "/addcomment", method = RequestMethod.POST)
-    public String addCommentSubmit(@ModelAttribute Comment comment, Model model) {
-    	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
-    	long id = comment.getHyperlinkId();
-    	if (dataBase.containsKey(id)) {
-    		model.addAttribute("error", 0);
-    		Hyperlink hyperlink = dataBase.get(comment.getHyperlinkId());
-    		//hyperlink.addComment(comment.getComment());
-    		dataBase.put(comment.getHyperlinkId(), hyperlink);
-    		model.addAttribute("hyperlink",	dataBase.get(comment.getHyperlinkId()));
-    		model.addAttribute("exists", true);
-    		return "redirect:/show/" + id;
-    	}
-    	else {
-        	return "index";
-    	}
-    }
-    
-    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET) // OK
     public String editHyperlinkForm(@PathVariable("id") long id, Model model) {
-    	if (dataBase.containsKey(id)) {
-        	Hyperlink hyperlink = dataBase.get(id);
+    	logger.info("Start edit GET.");
+    	try {
+        	Hyperlink hyperlink = hyperlinkDAO.getById(id);
     		model.addAttribute("hyperlink", hyperlink);
-        	model.addAttribute("error", 0);
+        	model.addAttribute("error", 0);    		
+    	}
+    	catch (EmptyResultDataAccessException ex) {
+    		model.addAttribute("error", 1);
+    	}
+    	return "edit";
+    }
+    
+    @RequestMapping(value = "/edit", method = RequestMethod.POST) // OK
+    public String editHyperlinkSubmit(@ModelAttribute Hyperlink hyperlink, Model model) {
+    	logger.info("Start edit POST.");
+    	try {
+    		hyperlinkDAO.update(hyperlink);
+    		model.addAttribute("hyperlink", hyperlink);
+    		model.addAttribute("exists", true);
+    		return "redirect:/show/" + hyperlink.getId();
+    	}
+    	catch (DataAccessException ex) {
+    		model.addAttribute("error", 2);
     		return "edit";
     	}
-    	else {
-    		model.addAttribute("error", 1);
-        	return "edit";
-    	}
     }
     
-    @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String editHyperlinkSubmit(@ModelAttribute Hyperlink hyperlink, Model model) {
-    	hyperlink.setLastEditedAt(new Date());
-		dataBase.put(hyperlink.getId(), hyperlink);
-		model.addAttribute("hyperlink", hyperlink);
-		model.addAttribute("exists", true);
-		return "redirect:/show/" + hyperlink.getId();
-    }
-    
-    @RequestMapping(value = "/show/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/show/{id}", method = RequestMethod.GET) // OK
     public String show(@PathVariable("id") long id, Model model) {
-    	boolean exists = false;
-    	if (dataBase.containsKey(id)) {
-    		exists = true;
-    		model.addAttribute("hyperlink",	dataBase.get(id));
+    	logger.info("Start show.");
+    	try {
+    		model.addAttribute("hyperlink",	hyperlinkDAO.getById(id));
+    		model.addAttribute("exists", true);
     	}
-    	model.addAttribute("exists", exists);
+    	catch (EmptyResultDataAccessException ex) {
+    		model.addAttribute("exists", false);
+    	}
     	return "show";
     }
     
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET) // OK
     public String delete(@PathVariable("id") long id, Model model) {
-    	boolean deleted = false;
-    	if (dataBase.containsKey(id)) {
-    		deleted = true;
-    		dataBase.remove(id);
+    	logger.info("Start delete.");
+    	try {
+    		hyperlinkDAO.deleteById(id);
+    		model.addAttribute("deleted", true);
     	}
-    	model.addAttribute("deleted", deleted);
-    	model.addAttribute("id", id);
+    	catch (DataAccessException ex) {
+    		model.addAttribute("deleted", false);
+    	}
+		model.addAttribute("id", id);
     	return "delete";
     }
    
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET) // getAll() returning hyperlink of last added tag
     public String getAllHyperlinks(Model model) {
-//    	if (firstTime) {
-//    		firstTime = false;
-//
-//    		LinkedList<String> tags1 = new LinkedList<String>();
-//    		tags1.add("one");
-//    		tags1.add("two");
-//    		tags1.add("three");
-//    		LinkedList<String> tags2 = new LinkedList<String>();
-//    		tags2.add("one");
-//    		tags2.add("two");
-//    		tags2.add("four");
-//    		LinkedList<String> tags3 = new LinkedList<String>();
-//    		tags3.add("four");
-//    		tags3.add("two");
-//    		tags3.add("three");
-//    		LinkedList<String> comments1 = new LinkedList<String>();
-//    		comments1.add("Comentário 1");
-//    		comments1.add("Comentário 2");
-//	    	dataBase.put((long)0, new Hyperlink(0, "www.google.com", tags1, comments1));
-//	    	dataBase.put((long)1, new Hyperlink(1, "www.facebook.com", tags2, comments1));
-//	    	dataBase.put((long)2, new Hyperlink(2, "www.gmail.com", tags3, comments1));
-//    	}
-    	List<Hyperlink> allHyperlinks = new ArrayList<Hyperlink>();  
-    	for (Map.Entry<Long, Hyperlink> entry : dataBase.entrySet()) {
-    		allHyperlinks.add(entry.getValue());
-    	}    	
-    	model.addAttribute("hyperlinksList", allHyperlinks);    	
+    	logger.info("Start index.");
+    	logger.info("List size: " + hyperlinkDAO.getAll().size());
+//    	List<Hyperlink> allHyperlinks = new ArrayList<Hyperlink>();  
+//    	for (Hyperlink hyperlink : HyperlinkDAO.getAll()) {
+//    		logger.info(hyperlink.toString());
+//    		allHyperlinks.add(hyperlink);
+//    	}    	
+//    	model.addAttribute("hyperlinksList", allHyperlinks);  
+    	model.addAttribute("hyperlinksList", hyperlinkDAO.getAll());
     	return "index";
     }
 }

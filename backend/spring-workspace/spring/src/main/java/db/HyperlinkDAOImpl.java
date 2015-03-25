@@ -50,7 +50,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	}
 	
     @Override
-	public void save (Hyperlink hyperlink) throws DataAccessException {
+	public long save (Hyperlink hyperlink) throws DataAccessException {
     	
     	//hyperlinkId
     	Number hypId = insertHyp.executeAndReturnKey(
@@ -74,6 +74,8 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 		    	metaTagDAO.save(metaTag);
 	    	}
 		}
+
+		return (Long) hypId;
 	}
   
 	public void update (Hyperlink hyperlink) throws DataAccessException {

@@ -10,8 +10,8 @@
 		<h1 th:text="'Adding new comment for ' + ${hyperlink.link}"></h1>
 		<form action="#" th:action="@{/addcomment}" th:object="${comment}" method="post">	
 	    	<input type="hidden" th:field="*{id}"/>
-	    	<input type="hidden" th:field="*{linkId}"/>
-	    	<p>Comment name: <input type="text" th:field="*{name}" /></p>
+	    	<input type="hidden" th:field="*{hyperlinkId}"/>
+	    	<p>Comment name: <input type="text" th:field="*{comment}" /></p>
 	        <p><input type="submit" value="Submit" /></p>
 	    </form>
 	</div>

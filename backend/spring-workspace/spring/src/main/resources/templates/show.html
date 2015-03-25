@@ -17,12 +17,12 @@
 			<li th:text="'Link: ' + ${hyperlink.link}"></li>
 			<li>Tags: 
 				<ul>
-					<li th:each="tag : ${hyperlink.tags}" th:text="${tag}"></li>
+					<li th:each="tag : ${hyperlink.metaTags}" th:text="${tag.tag}"></li>
 				</ul>
 			</li>
 			<li>Comments: 
 				<ul>
-					<li th:each="comment : ${hyperlink.comments}" th:text="${comment}"></li>
+					<li th:each="comment : ${hyperlink.comments}" th:text="${comment.comment}"></li>
 				</ul>
 			</li>
 			<li th:text="'Added at: ' + ${hyperlink.addedAt}"></li>

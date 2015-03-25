@@ -8,10 +8,10 @@
 	<h1 th:if="${error}" th:text="'No entry with id ' + ${id}"></h1>
 	<div th:unless="${error}">
 		<h1 th:text="'Adding new tag for ' + ${hyperlink.link}"></h1>
-		<form action="#" th:action="@{/addtag}" th:object="${tag}" method="post">	
+		<form action="#" th:action="@{/addtag}" th:object="${tag}" method="post">
 	    	<input type="hidden" th:field="*{id}"/>
-	    	<input type="hidden" th:field="*{linkId}"/>
-	    	<p>Tag name: <input type="text" th:field="*{name}" /></p>
+	    	<input type="hidden" th:field="*{hyperlinkId}"/>
+	    	<p>Tag name: <input type="text" th:field="*{tag}" /></p>
 	        <p><input type="submit" value="Submit" /></p>
 	    </form>
 	</div>

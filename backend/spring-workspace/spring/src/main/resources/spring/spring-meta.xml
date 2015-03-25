@@ -11,6 +11,6 @@
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
         <property name="url" value="jdbc:mysql://localhost:3306/hyper" />
         <property name="username" value="root" />
-        <property name="password" value="root" />
+        <property name="password" value="hdces22" />
     </bean>
 </beans>

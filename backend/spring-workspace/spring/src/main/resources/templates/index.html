@@ -18,7 +18,7 @@
 		</tr>
 		<tr th:each="hyperlink : ${hyperlinksList}">
 			<td><a href="show.html" th:href="@{/show/{id}(id=${hyperlink.id})}" th:text="${hyperlink.link}"></a></td>
-			<td><span th:each="tag : ${hyperlink.tags}" th:text="${tag} + ','"></span></td>
+			<td><span th:each="tag : ${hyperlink.metaTags}" th:text="${tag} + ','"></span></td>
 			<td><a href="edit.html" th:href="@{/edit/{id}(id=${hyperlink.id})}" th:text="Edit" ></a></td>
 			<td><a href="delete.html" th:href="@{/delete/{id}(id=${hyperlink.id})}" th:text="Delete" ></a></td>
 		</tr>	

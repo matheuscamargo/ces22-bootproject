@@ -20,7 +20,8 @@ public class Hyperlink extends BaseEntity {
 	public Hyperlink() {
 		id = 98;
 		link = null;
-		metaTags = null;
+		metaTags = new LinkedList<MetaTag>();
+		comments = new LinkedList<Comment>();
 		createdAt = new Date();
 		lastEditedAt = new Date();
 	}
