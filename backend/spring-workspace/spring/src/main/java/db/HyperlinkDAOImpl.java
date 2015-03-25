@@ -220,6 +220,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 			//New hyperlink
 			Hyperlink hyp;
 			long id = new Long(((Integer)rs.get("id")).intValue()); //strange cast
+			System.out.println(id);
 			if (!hypMap.containsKey(id)) {
 				hyp = new Hyperlink(id, (String)rs.get("link"));
 				hyp.setCreatedAt((Date)rs.get("created"));
@@ -243,7 +244,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 											hyp.getId());
 				hyp.getComments().add(com);
 			}
-			
+
 			hypMap.put(hyp.getId(), hyp);
 		}
 		return new ArrayList<Hyperlink>(hypMap.values());	

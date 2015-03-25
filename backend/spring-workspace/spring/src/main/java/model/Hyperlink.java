@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 //model class for describing a Hyperlink
 public class Hyperlink extends BaseEntity {
 	
-	private long id;
 	private String link;
 
 	private Date createdAt, lastEditedAt;
