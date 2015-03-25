@@ -1,10 +1,13 @@
-<!doctype html>
-<html>
-	<head>
-	<title>Hyperlinks Access</title>
-		<body>
-			<div id="content"> {% block content %} {% endblock %} </div>
-		</body>
-	</head>
+{% extends "bootstrap/base.html" %}
 
-</html>
+<title>{% block title %}This is an example page{% endblock %}</title>
+
+<div class="navbar navbar-fixed-top">
+{% block navbar %}
+{% endblock %}
+</div>
+
+<div id="content">
+{% block content %}
+{% endblock %}
+</div>div>

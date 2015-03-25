@@ -1,10 +1,12 @@
 from flask import Flask
 from flask import render_template
+from flask_bootstrap import Bootstrap
 import requests
 import json
 
 
 app = Flask(__name__,  template_folder='../templates')
+Bootstrap(app)
 
 json_api_string = "http://192.168.0.22:8080/api"
 
@@ -36,12 +38,16 @@ def modify():
 
 @app.route('/', methods = ['GET'])
 def list():
-	# request = requests.get(json_api_string)
-	# request_json = request.json()
-	return render_template('index.html')
-	return render_template('index.html', entries=request_json)
+	request = requests.get(json_api_string + "/")
+	hyperlinkList = request.json()
+	# return render_template('index.html')
+	return render_template('index.html', entries=hyperlinkList)
 
 
 if __name__ == '__main__':
+	# request = requests.get("http://api.openweathermap.org/data/2.5/weather?q=London,uk")
+	# request_json = request.json()
+	# print(request_json['coord'])
+	# print (request_json['coord']['lat'])
 	app.debug = True
 	app.run()
