@@ -2,13 +2,15 @@ package db;
 
 import java.util.List;
 
+import org.springframework.dao.DataAccessException;
+
 import model.MetaTag;
 
 public interface MetaTagDAO {
-	public void save (MetaTag metaTag);
-	public void update (MetaTag metaTag);
-	public void deleteById (long id);
-	public void deleteByHyperlinkId (long hyperlinkId);
- 	public MetaTag getById(long id);
- 	public List<MetaTag> getByHyperLinkId(long hypId);
+	public void save (MetaTag metaTag) throws DataAccessException;
+	public void update (MetaTag metaTag) throws DataAccessException;
+	public void deleteById (long id) throws DataAccessException;
+	public void deleteByHyperlinkId (long hyperlinkId) throws DataAccessException;
+ 	public MetaTag getById(long id) throws DataAccessException;
+ 	public List<MetaTag> getByHyperLinkId(long hypId) throws DataAccessException;
 }

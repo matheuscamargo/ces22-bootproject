@@ -11,7 +11,10 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
@@ -36,27 +39,22 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 							MetaTagDAO metaTagDAO) {
 		
 		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-		
-		this.commentDAO = commentDAO;
-		this.metaTagDAO = metaTagDAO;
+	
 		this.insertHyp =   
                 new SimpleJdbcInsert(dataSource)  
                  .withTableName("Hyperlink")  
-                 .usingGeneratedKeyColumns("id");  
+                 .usingGeneratedKeyColumns("id");
+		
+		this.commentDAO = commentDAO;
+		this.metaTagDAO = metaTagDAO;
 	}
 	
     @Override
-	public void save (Hyperlink hyperlink) {
-    	String query = "insert into Hyperlink (link, created, lastEdited)"
-    			+ " values (:link, :created, :lastEdited)";
-    	
-    	Map<String, Object> params = new HashMap<String, Object>();
-    	params.put("link", hyperlink.getLink());
-    	params.put("created", hyperlink.getAddedAt());
-    	params.put("lastEdited", hyperlink.getLastEditedAt());
+	public void save (Hyperlink hyperlink) throws DataAccessException {
     	
     	//hyperlinkId
-    	Number hypId = insertHyp.executeAndReturnKey(params);
+    	Number hypId = insertHyp.executeAndReturnKey(
+    			createHyperlinkParameterSource(hyperlink));
     		
 		//sucessfully executed query
 		System.out.println("Saved hyperlink");
@@ -76,28 +74,14 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 		    	metaTagDAO.save(metaTag);
 	    	}
 		}
-	    
-//		else 	{
-//			System.out.println("Unable to Save hyperlink");
-//		}
-		
-		//TODO
-		//else {
-	//		System.out.println("Already inside the db");
-	//	}
 	}
   
-	public void update (Hyperlink hyperlink) {
-		String query = "update Hyperlink set link=:link, lastEdited=:lastEdited"
-				+ " where id=:id";
-       
-    	Map<String, Object> params = new HashMap<String, Object>();
-    	params.put("link", hyperlink.getLink());
-    	params.put("id", hyperlink.getId());
-    	params.put("lastEdited", new Date());
-    	//params.put("addedAt", hyperlink.getAddedAt());
+	public void update (Hyperlink hyperlink) throws DataAccessException {
+		String query = "UPDATE Hyperlink SET link=:link, lastEdited=:lastEdited"
+				+ " WHERE id=:id";
          
-		int out = namedParameterJdbcTemplate.update(query, params);
+		int out = namedParameterJdbcTemplate.update(query,
+				createHyperlinkParameterSource(hyperlink));
 		
 		//update Comment
 		commentDAO.deleteByHyperlinkId(hyperlink.getId());
@@ -112,13 +96,18 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 			metaTag.setHyperlinkId(hyperlink.getId()); //hack
 			metaTagDAO.save(metaTag);
 		}
-
-		if(out !=0) System.out.println("Saved hyperlink");
-		else 		System.out.println("Unable to save hyperlink");
 	}
 	
-	public void deleteById (long id) {
-        String query = "delete from Hyperlink where id=:id";
+	private MapSqlParameterSource createHyperlinkParameterSource(Hyperlink hyperlink) {
+		return new MapSqlParameterSource()
+				.addValue("id", hyperlink.getId())
+				.addValue("link", hyperlink.getLink())
+				.addValue("created", new Date())
+				.addValue("lastEdited", new Date());
+	}
+	
+	public void deleteById (long id) throws DataAccessException {
+        String query = "delete from Hyperlink WHERE id=:id";
          
         Map<String, Object> params = new HashMap<String, Object>();
     	params.put("id", id);
@@ -133,31 +122,40 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
         }else System.out.println("No Employee found with id="+id);
 	}
 	
-	public Hyperlink getById(long id) {
-		 String query = "select * from Hyperlink where id = :id";
+	public Hyperlink getById(long id) throws DataAccessException {
+		 Hyperlink hyp;
+		 
+		 try {
+		 String query = "SELECT * from Hyperlink WHERE id = :id";
 		 Map<String, Object> params = new HashMap<String, Object>();
 		 params.put("id", id);
 		 
-		 Hyperlink hyp = (Hyperlink) namedParameterJdbcTemplate
+		 hyp = (Hyperlink) namedParameterJdbcTemplate
 				 .queryForObject(query, params, new HyperlinkMapper());
 		 
+		 }
+		 //user not found
+		 catch (EmptyResultDataAccessException ex) {
+			 //add to logger
+			 throw ex;
+		 }
 		 //inserting comments and metatags
 		 hyp.setComments(commentDAO.getByHyperLinkId(id));
 		 hyp.setMetaTags(metaTagDAO.getByHyperLinkId(id));
 		 
 		 return hyp;
 	}
-	public List<Hyperlink> getAllWithTag(MetaTag mtag) {
-		 String query = "select h.id, h.link, h.created, h.lastEdited,"
+	public List<Hyperlink> getAllWithTag(MetaTag mtag) throws DataAccessException {
+		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 0 as type, mt.tag as field, mt.id as cid from "
-	        		+ " (select h.id, h.link, h.created, h.lastEdited from Hyperlink h"
-	        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId where mt.tag=:tag) h"
+	        		+ " (SELECT h.id, h.link, h.created, h.lastEdited from Hyperlink h"
+	        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId WHERE mt.tag=:tag) h"
 	        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId"
 	        		+ " UNION"
-	        		+ " select h.id, h.link, h.created, h.lastEdited,"
+	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 1 as type, c.comment as field, c.id as cid from"
-	        		+ " (select h.id, h.link, h.created, h.lastEdited from Hyperlink h"
-	        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId where mt.tag=:tag) h"
+	        		+ " (SELECT h.id, h.link, h.created, h.lastEdited from Hyperlink h"
+	        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId WHERE mt.tag=:tag) h"
 	        		+ " inner join Comment c on h.id = c.hyperlinkId";
 	        		 
 	        List<Hyperlink> hypList;
@@ -172,14 +170,14 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 			return hypList;
 	}
 	
-	public List<Hyperlink> getAllWithLink(String link) {
-		 String query = "select h.id, h.link, h.created, h.lastEdited,"
+	public List<Hyperlink> getAllWithLink(String link) throws DataAccessException {
+		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 0 as type, mt.tag as field, mt.id as cid  from  Hyperlink h"
-	        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId where h.link=:link"
+	        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId WHERE h.link=:link"
 	        		+ " UNION"
-	        		+ " select h.id, h.link, h.created, h.lastEdited,"
+	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 1 as type, c.comment as field, c.id as cid from  Hyperlink h"
-	        		+ " inner join Comment c on h.id = c.hyperlinkId where h.link=:link";
+	        		+ " inner join Comment c on h.id = c.hyperlinkId WHERE h.link=:link";
 
 	        List<Hyperlink> hypList;
 	        
@@ -193,12 +191,12 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 			return hypList;
 	}
 	
-	public List<Hyperlink> getAll() {
-        String query = "select h.id, h.link, h.created, h.lastEdited,"
+	public List<Hyperlink> getAll() throws DataAccessException {
+        String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
         		+ " 0 as type, mt.tag as field, mt.id as cid  from  Hyperlink h"
         		+ " inner join MetaTag mt on h.id = mt.hyperlinkId"
         		+ " UNION"
-        		+ " select h.id, h.link, h.created, h.lastEdited,"
+        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
         		+ " 1 as type, c.comment as field, c.id as cid from  Hyperlink h"
         		+ " inner join Comment c on h.id = c.hyperlinkId";
         		 
@@ -221,8 +219,6 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 			//New hyperlink
 			Hyperlink hyp;
 			long id = new Long(((Integer)rs.get("id")).intValue()); //strange cast
-			
-			System.out.println(id);
 			if (!hypMap.containsKey(id)) {
 				hyp = new Hyperlink(id, (String)rs.get("link"));
 				hyp.setCreatedAt((Date)rs.get("created"));
@@ -230,7 +226,6 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 				hyp.setMetaTags(new ArrayList<MetaTag>());
 				hyp.setComments(new ArrayList<Comment>());
 			}
-			
 			else hyp = hypMap.get(id);
 			
 			//MetaTag row

@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -24,7 +25,7 @@ public class MetaTagDAOImpl implements MetaTagDAO{
     }
 	
     @Override
-	public void save (MetaTag metaTag) {
+	public void save (MetaTag metaTag) throws DataAccessException {
 		String query = "insert into MetaTag (tag, hyperlinkid) values (?,?)";
 	
         Object[] args = new Object[] {metaTag.getTag(),
@@ -38,7 +39,7 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 	}
 	
     @Override
-	public void update (MetaTag metaTag) {
+	public void update (MetaTag metaTag) throws DataAccessException {
         String query = "update MetaTag set tag=?, hyperlinkid=? where id=?";
 
         Object[] args = new Object[] {metaTag.getTag(),
@@ -54,7 +55,7 @@ public class MetaTagDAOImpl implements MetaTagDAO{
     }
     
     @Override
-	public void deleteById (long id) {
+	public void deleteById (long id) throws DataAccessException {
         String query = "delete from MetaTag where id=?";
          
         int out = jdbcTemplate.update(query, id);
@@ -66,7 +67,7 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 	}
     
     @Override
-	public void deleteByHyperlinkId (long hyperlinkId) {
+	public void deleteByHyperlinkId (long hyperlinkId) throws DataAccessException {
         String query = "delete from MetaTag where hyperlinkId=?";
          
         int out = jdbcTemplate.update(query, hyperlinkId);
@@ -78,7 +79,7 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 	}
 	
     @Override
-	public MetaTag getById(long id) {
+	public MetaTag getById(long id) throws DataAccessException {
 		 String query = "select id, tag, hyperlinkid from MetaTag where id = ?";
 		 
 		 MetaTag mtag = jdbcTemplate.queryForObject(query, new Object[]{id},
@@ -87,7 +88,7 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 	   return mtag;
 	}
 	@Override
-	public List<MetaTag> getByHyperLinkId(long hyperLinkId) {
+	public List<MetaTag> getByHyperLinkId(long hyperLinkId) throws DataAccessException {
 		 String query = "select id, tag, hyperlinkid from MetaTag where hyperlinkid = ?";
 		 //results
 		 List<MetaTag> mtList = new ArrayList<MetaTag>();

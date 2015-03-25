@@ -1,4 +1,4 @@
-package bootProject;
+package web;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,7 +40,7 @@ public class Application implements CommandLineRunner {
     //test methods
 	void MetaTagTest() {
 	    System.out.println("Starting Meta Test");
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-meta.xml");
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring/spring-meta.xml");
 		System.out.println("Done loading ctx");
 	    //Get the MetaTagDAO Bean
 	    MetaTagDAO metaTagDAO = ctx.getBean("metaTagDAO", MetaTagDAO.class);
@@ -63,11 +63,12 @@ public class Application implements CommandLineRunner {
 	    //Read
 	    List<MetaTag> com1 = metaTagDAO.getByHyperLinkId(0);
 	    System.out.println("MetaTags Retrieved::"+ com1.size());
+	    ctx.close();
 	}
 	
     void CommentTest() {
         System.out.println("Starting Comment Test");
-    	ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-comment.xml");
+    	ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring/spring-comment.xml");
     	System.out.println("Done loading ctx");
         //Get the CommentDAO Bean
         CommentDAO commentDAO = ctx.getBean("commentDAO", CommentDAO.class);
@@ -90,12 +91,14 @@ public class Application implements CommandLineRunner {
         //Read
         List<Comment> com1 = commentDAO.getByHyperLinkId(0);
         System.out.println("Comments Retrieved::"+ com1.size());
+        
+        ctx.close();
        
     }
     
     void HyperlinkTest() {
     	//Test
-   	 ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-hyper.xml");
+   	 ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring/spring-hyper.xml");
         
         //Get the HyperlinkDAO Bean
         HyperlinkDAO HyperlinkDAO = ctx.getBean("hyperlinkDAO", HyperlinkDAO.class);
@@ -126,7 +129,7 @@ public class Application implements CommandLineRunner {
         System.out.println("Hyperlink Retrieved::"+hyp1);
 //         
 //      //Update
-        hyp.setId(5);
+        hyp.setId(40);
         hyp.setLink("www.ocu1.com");
         List<MetaTag> mtList2 = new ArrayList<MetaTag>();
         mtList2.add(new MetaTag("meta tag UPDATE"));

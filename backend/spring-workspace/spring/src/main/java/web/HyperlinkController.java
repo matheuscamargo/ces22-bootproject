@@ -1,4 +1,4 @@
-package bootProject;
+package web;
 
 import java.util.concurrent.atomic.AtomicLong;
 
