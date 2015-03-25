@@ -10,6 +10,11 @@ public class MetaTag extends BaseEntity{
 		id = 99;
 		hyperlinkId = 99;
 	}
+		
+	@Override
+	public String toString() { 
+		return String.format("Tag[id=%d linkId=%d tag= %s]", id, hyperlinkId, tag);
+	}
 	
 	public MetaTag (String tag) {
 		this.tag = tag; 

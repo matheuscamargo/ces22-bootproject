@@ -2,9 +2,9 @@ package model;
 
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 //model class for describing a Hyperlink

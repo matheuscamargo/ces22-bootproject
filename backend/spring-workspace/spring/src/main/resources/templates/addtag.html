@@ -5,15 +5,16 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-	<h1 th:text="'Adding new tag for ' + ${hyperlink.link}"></h1>
-	<p th:if="${error}" th:text="'Error true'"></p>
-	<p th:unless="${error}" th:text="'Error false'"></p>
-	<form th:unless="${error}" action="#" th:action="@{/addtag}" th:object="${tag}" method="post">	
-    	<input type="hidden" th:field="*{id}"/>
-    	<input type="hidden" th:field="*{linkId}"/>
-    	<p>Tag name: <input type="text" th:field="*{name}" /></p>
-        <p><input type="submit" value="Submit" /></p>
-    </form>
+	<h1 th:if="${error}" th:text="'No entry with id ' + ${id}"></h1>
+	<div th:unless="${error}">
+		<h1 th:text="'Adding new tag for ' + ${hyperlink.link}"></h1>
+		<form action="#" th:action="@{/addtag}" th:object="${tag}" method="post">	
+	    	<input type="hidden" th:field="*{id}"/>
+	    	<input type="hidden" th:field="*{linkId}"/>
+	    	<p>Tag name: <input type="text" th:field="*{name}" /></p>
+	        <p><input type="submit" value="Submit" /></p>
+	    </form>
+	</div>
 	<br/>
 	<a href="index.html" th:href="@{/}" th:text="'Main page'" ></a>
 </body>

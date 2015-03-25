@@ -29,7 +29,7 @@ public class CommentDAOImpl implements CommentDAO {
 		String query = "insert into Comment (comment, hyperlinkid) values (?,?)";
 	
         Object[] args = new Object[] {comment.getComment(),
-        							  comment.getHyperLinkId()};
+        							  comment.getHyperlinkId()};
          
         int out = jdbcTemplate.update(query, args);
          
@@ -43,7 +43,7 @@ public class CommentDAOImpl implements CommentDAO {
         String query = "update Comment set comment=?, hyperlinkid=? where id=?";
 
         Object[] args = new Object[] {comment.getComment(),
-				  comment.getHyperLinkId(),
+				  comment.getHyperlinkId(),
 				  comment.getId()};
          
         int out = jdbcTemplate.update(query, args);

@@ -27,7 +27,7 @@ public class Comment extends BaseEntity {
 		return comment;
 	}
 	
-	public long getHyperLinkId() {
+	public long getHyperlinkId() {
 		return hyperlinkId;
 	}
 }
