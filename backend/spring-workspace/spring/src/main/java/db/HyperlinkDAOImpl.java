@@ -145,6 +145,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 		 
 		 return hyp;
 	}
+	
 	public List<Hyperlink> getAllWithTag(MetaTag mtag) throws DataAccessException {
 		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 0 as type, mt.tag as field, mt.id as cid from "
@@ -165,8 +166,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	        
 	        List<Map<String, Object>> rows = namedParameterJdbcTemplate.queryForList(query, params);
 	        
-	        hypList = extractData(rows);
-	         			
+	        hypList = extractData(rows);	
 			return hypList;
 	}
 	
@@ -187,7 +187,6 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	        List<Map<String, Object>> rows = namedParameterJdbcTemplate.queryForList(query, params);
 	        
 	        hypList = extractData(rows);
-	         			
 			return hypList;
 	}
 	

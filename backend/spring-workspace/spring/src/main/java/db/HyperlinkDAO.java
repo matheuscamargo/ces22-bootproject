@@ -8,7 +8,6 @@ import model.Hyperlink;
 import model.MetaTag;
 import model.Comment;
 
-
 //CRUD operations
 public interface HyperlinkDAO {
 	public void save (Hyperlink hyperlink) throws DataAccessException;
