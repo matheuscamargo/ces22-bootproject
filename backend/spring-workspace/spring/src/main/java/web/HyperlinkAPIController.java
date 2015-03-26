@@ -1,6 +1,8 @@
 package web;
 
+import model.Comment;
 import model.Hyperlink;
+import model.MetaTag;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -46,21 +48,60 @@ public class HyperlinkAPIController {
     	catch (DataAccessException ex) {
     		return null;
     	}
+    }    
+    @RequestMapping(value = "/api/addtag", method = RequestMethod.POST)
+    public Hyperlink addMetaTag(@RequestBody MetaTag tag) {
+    	logger.info("Start addMetaTag.");
+    	try {
+    		hyperlinkDAO.getById(tag.getHyperlinkId());
+    		metaTagDAO.save(tag);
+        	return hyperlinkDAO.getById(tag.getHyperlinkId());
+    	}
+    	catch (DataAccessException ex) {
+    		return null;
+    	}
+    }    
+    @RequestMapping(value = "/api/addcomment", method = RequestMethod.POST)
+    public Hyperlink addComment(@RequestBody Comment comment) {
+    	logger.info("Start addComment.");
+    	try {
+    		hyperlinkDAO.getById(comment.getHyperlinkId());
+    		commentDAO.save(comment);
+        	return hyperlinkDAO.getById(comment.getHyperlinkId());
+    	}
+    	catch (DataAccessException ex) {
+    		return null;
+    	}
     }
-    
     @RequestMapping(value = "/api/edit", method = RequestMethod.POST) // OK
     public Hyperlink editHyperlink(@RequestBody Hyperlink hyperlink) {
     	logger.info("Start editHyperlink.");
     	try {
     		hyperlinkDAO.getById(hyperlink.getId());
     		hyperlinkDAO.update(hyperlink);
-    		return hyperlink;
+    		return hyperlinkDAO.getById(hyperlink.getId());
     	}
     	catch (DataAccessException ex) {
     		return null;
     	}
     }
-    
+    @RequestMapping(value = "/api/editcomment", method = RequestMethod.POST)
+    public Hyperlink editComment(@RequestBody Comment comment) {
+    	logger.info("Start editComment.");
+    	try {
+    		hyperlinkDAO.getById(comment.getHyperlinkId());
+    		commentDAO.update(comment);
+        	return hyperlinkDAO.getById(comment.getHyperlinkId());
+    	}
+    	catch (DataAccessException ex) {
+    		return null;
+    	}
+    }
+    @RequestMapping(value = "/api", method = RequestMethod.GET) // OK
+    public List<Hyperlink> getAllHyperlinks() {
+    	logger.info("Start getAllHyperliks.");
+    	return hyperlinkDAO.getAll();
+    }
     @RequestMapping(value = "/api/show/{id}", method = RequestMethod.GET) // OK
     public Hyperlink show(@PathVariable("id") long id) {
     	logger.info("Start show.");
@@ -71,7 +112,27 @@ public class HyperlinkAPIController {
     		return null;
     	}
     }
-    
+    @RequestMapping(value = "/api/getallwithtag", method = RequestMethod.POST) // OK
+    public List<Hyperlink> getAllWithTag(@RequestBody MetaTag tag) {
+    	logger.info("Start getAllWithTag.");
+    	try {
+        	return hyperlinkDAO.getAllWithTag(tag);
+    	}
+    	catch (DataAccessException ex) {
+    		return null;
+    	}
+    }    
+    @RequestMapping(value = "/api/getallwithhyperlink", method = RequestMethod.POST) // OK
+    public List<Hyperlink> getAllWithHyperlink(@RequestBody Hyperlink hyperlink) {
+    	logger.info("Start getAllWithHyperlink.");
+    	try {
+        	return hyperlinkDAO.getAllWithLink(hyperlink.getLink());
+    	}
+    	catch (DataAccessException ex) {
+    		// throw ex;
+    		return null;
+    	}
+    }        
     @RequestMapping(value = "/api/delete/{id}", method = RequestMethod.PUT) // OK
     public Hyperlink delete(@PathVariable("id") long id) {
     	logger.info("Start delete.");
@@ -84,10 +145,18 @@ public class HyperlinkAPIController {
     		return null;
     	}
     }
-   
-    @RequestMapping(value = "/api", method = RequestMethod.GET) // OK
-    public List<Hyperlink> getAllHyperlinks() {
-    	logger.info("Start getAllHyperliks.");
-    	return hyperlinkDAO.getAll();
+    @RequestMapping(value = "/api/deletetag/{id}", method = RequestMethod.PUT)
+    public Hyperlink deleteMetaTag(@PathVariable("id") long id) {
+    	logger.info("Start deleteMetaTag.");
+    	try {
+    		long hyperlinkId = metaTagDAO.getById(id).getHyperlinkId();
+    		hyperlinkDAO.getById(hyperlinkId);
+    		metaTagDAO.getById(id);
+    		metaTagDAO.deleteById(id);
+    		return hyperlinkDAO.getById(hyperlinkId);
+    	}
+    	catch (DataAccessException ex) {
+    		return null;
+    	}
     }
 }
