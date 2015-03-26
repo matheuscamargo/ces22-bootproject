@@ -14,6 +14,7 @@
     </parent>
 
     <dependencies>
+<<<<<<< HEAD
         <!-- Spring and Transactions -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -27,6 +28,13 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
+=======
+        <!-- Jackson
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency> -->
+>>>>>>> 85a705d256f392954a635a4cbb1b62ba363e81e7
         <!-- jstl -->
         <dependency>
 			<groupId>jstl</groupId>
