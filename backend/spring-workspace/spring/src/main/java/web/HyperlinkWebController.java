@@ -179,16 +179,10 @@ public class HyperlinkWebController{
     	return "delete";
     }
    
-    @RequestMapping(value = "/", method = RequestMethod.GET) // getAll() returning hyperlink of last added tag
+    @RequestMapping(value = "/", method = RequestMethod.GET) // OK
     public String getAllHyperlinks(Model model) {
     	logger.info("Start index.");
-    	logger.info("List size: " + hyperlinkDAO.getAll().size());
-//    	List<Hyperlink> allHyperlinks = new ArrayList<Hyperlink>();  
-//    	for (Hyperlink hyperlink : HyperlinkDAO.getAll()) {
-//    		logger.info(hyperlink.toString());
-//    		allHyperlinks.add(hyperlink);
-//    	}    	
-//    	model.addAttribute("hyperlinksList", allHyperlinks);  
+    	logger.info("List size: " + hyperlinkDAO.getAll().size()); 
     	model.addAttribute("hyperlinksList", hyperlinkDAO.getAll());
     	return "index";
     }

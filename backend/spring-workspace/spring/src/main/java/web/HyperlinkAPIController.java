@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,62 +19,75 @@ import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import db.CommentDAO;
+import db.HyperlinkDAO;
+import db.MetaTagDAO;
+
 //@RestController
 @RestController
 public class HyperlinkAPIController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HyperlinkAPIController.class);
+    	 
+  	ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring/spring-hyper.xml");
     
-    private Map<Long, Hyperlink> dataBase = new HashMap<Long, Hyperlink>();
+    //Get DAO beans
+    HyperlinkDAO hyperlinkDAO = ctx.getBean("hyperlinkDAO", HyperlinkDAO.class);
+    MetaTagDAO metaTagDAO = ctx.getBean("metaTagDAO", MetaTagDAO.class);
+    CommentDAO commentDAO = ctx.getBean("commentDAO", CommentDAO.class);
 
-    @RequestMapping(value = "/api/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/add", method = RequestMethod.POST) // OK
     public Hyperlink addHyperlink(@RequestBody Hyperlink hyperlink) {
     	logger.info("Start addHyperlink.");
-    	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
-    	hyperlink.setLastEditedAt(hyperlink.getAddedAt());
-    	dataBase.put(hyperlink.getId(), hyperlink);
-        return hyperlink;
+    	try {
+    		long id = hyperlinkDAO.save(hyperlink);
+        	return hyperlinkDAO.getById(id);
+    	}
+    	catch (DataAccessException ex) {
+    		return null;
+    	}
     }
     
-    @RequestMapping(value = "/api/edit", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/edit", method = RequestMethod.POST) // OK
     public Hyperlink editHyperlink(@RequestBody Hyperlink hyperlink) {
     	logger.info("Start editHyperlink.");
-    	long key = hyperlink.getId();
-    	if (dataBase.containsKey(key)) {
-    		hyperlink.setLastEditedAt(new Date());
-    		dataBase.put(key, hyperlink);
+    	try {
+    		hyperlinkDAO.getById(hyperlink.getId());
+    		hyperlinkDAO.update(hyperlink);
     		return hyperlink;
     	}
-    	else return null;
+    	catch (DataAccessException ex) {
+    		return null;
+    	}
     }
     
-    @RequestMapping(value = "/api/show/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/show/{id}", method = RequestMethod.GET) // OK
     public Hyperlink show(@PathVariable("id") long id) {
     	logger.info("Start show.");
-    	if (dataBase.containsKey(id)) {
-    		return dataBase.get(id);
+    	try {
+    		return hyperlinkDAO.getById(id);
     	}
-    	else return null;
+    	catch (EmptyResultDataAccessException ex) {
+    		return null;
+    	}
     }
     
-    @RequestMapping(value = "/api/delete/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/api/delete/{id}", method = RequestMethod.PUT) // OK
     public Hyperlink delete(@PathVariable("id") long id) {
     	logger.info("Start delete.");
-    	if (dataBase.containsKey(id)) {
-    		Hyperlink temp = dataBase.get(id);
-    		dataBase.remove(id);
-    		return temp;
+    	try {
+    		Hyperlink hyperlink = hyperlinkDAO.getById(id);
+    		hyperlinkDAO.deleteById(id);
+    		return hyperlink;
     	}
-    	else return null;
+    	catch (DataAccessException ex) {
+    		return null;
+    	}
     }
    
-    @RequestMapping(value = "/api", method = RequestMethod.GET)
+    @RequestMapping(value = "/api", method = RequestMethod.GET) // OK
     public List<Hyperlink> getAllHyperlinks() {
     	logger.info("Start getAllHyperliks.");
-    	List<Hyperlink> allHyperlinks = new ArrayList<Hyperlink>();
-    	for (Map.Entry<Long, Hyperlink> entry : dataBase.entrySet()) {
-    		allHyperlinks.add(entry.getValue());
-    	}
-    	return allHyperlinks;
+    	return hyperlinkDAO.getAll();
     }
 }

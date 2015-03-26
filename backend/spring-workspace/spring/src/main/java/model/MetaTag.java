@@ -1,5 +1,7 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class MetaTag extends BaseEntity{
 	
 	private String tag;
@@ -13,10 +15,10 @@ public class MetaTag extends BaseEntity{
 		
 	@Override
 	public String toString() { 
-		return String.format("Tag[id=%d linkId=%d tag= %s]", id, hyperlinkId, tag);
+		return String.format("Tag[id=%d hyperlinklinkId=%d tag=%s]", id, hyperlinkId, tag);
 	}
 	
-	public MetaTag (String tag) {
+	public MetaTag (@JsonProperty("tag") String tag) {
 		this.tag = tag; 
 	}
 	public MetaTag (long id, String tag, long hyperlinkId) {

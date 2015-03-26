@@ -1,12 +1,14 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Comment extends BaseEntity {
 	private String comment;
 	private long hyperlinkId;
 	
 	public Comment () {}
 	
-	public Comment (String comment) {
+	public Comment (@JsonProperty("comment") String comment) {
 		this.comment = comment;
 	}
 	

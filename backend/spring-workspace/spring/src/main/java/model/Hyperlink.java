@@ -33,6 +33,10 @@ public class Hyperlink extends BaseEntity {
 					 @JsonProperty("link") String link) {
 		this.id = id;
 		this.link = link;
+		metaTags = new LinkedList<MetaTag>();
+		comments = new LinkedList<Comment>();
+		createdAt = new Date();
+		lastEditedAt = new Date();
 	}
 	
 	@Override
