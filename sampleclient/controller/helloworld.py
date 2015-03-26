@@ -1,6 +1,11 @@
 from flask import Flask
 from flask import render_template
+from flask import request
+from flask import redirect
+from flask import url_for
+
 from flask_bootstrap import Bootstrap
+
 import requests
 import json
 
@@ -8,11 +13,8 @@ import json
 app = Flask(__name__,  template_folder='../templates')
 Bootstrap(app)
 
-json_api_string = "http://192.168.0.22:8080/api"
+json_api_string = "http://localhost:8080/api"
 
-@app.route('/<username>')
-def hello_world(username):
-    return render_template('index.html', name=username)
 
 # @app.route('/')
 # def home():
@@ -25,8 +27,18 @@ def show_add_form():
 
 @app.route('/add', methods = ['POST'])
 def add():
-	r = requests.post(json_api_string)
-	print json.dumps(r.json())
+	link = request.form["link"]
+	tags = [{"tag" :request.form["tag"]}]
+	comments = [{"comment": request.form["comment"]}]
+	print link
+	print tags
+	print comments
+
+	payload = {'link': link}
+	json_payload = json.dumps(payload)
+	print json_payload
+	r = requests.post(json_api_string + "/add", json_payload)
+	print r.status_code
 	return redirect(url_for('list'))
 
 @app.route('/modify/<id>')

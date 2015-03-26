@@ -7,18 +7,18 @@
 <h1> Insert New Hyperlink </h1>
 
 <div id="hyperlink_form">
-<form action="" method="post">
+<form action="{{ url_for('add') }}" method="post">
   <div class="form-group">
     <label for="HyperlinkLink">Hyperlink</label>
-    <input type="text" class="form-control" id="HyperlinkLink" placeholder="Enter hyperlink">
+    <input type="text" class="form-control" name="link" placeholder="Enter hyperlink">
   </div>
   <div class="form-group">
     <label for="MetaTagInput">Metatags</label>
-    <input type="text" class="form-control" id="MetaTagInput" placeholder="Enter metatag">
+    <input type="text" class="form-control" name="tag" placeholder="Enter metatag">
   </div>
     <div class="form-group">
     <label for="CommentInput">Comments</label>
-    <input type="text" class="form-control" id="CommentInput" placeholder="Enter Comment">
+    <input type="text" class="form-control" name="comment" placeholder="Enter Comment">
   </div>
   <button type="submit" class="btn btn-default">Submit</button>
 </form>
