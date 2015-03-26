@@ -10,17 +10,20 @@ import requests
 import json
 
 
+#################
+# configuration #
+#################
+
 app = Flask(__name__,  template_folder='../templates')
 Bootstrap(app)
 
 json_api_string = "http://localhost:8080/api"
 
 
-# @app.route('/')
-# def home():
-# 	return render_template('index.html')
+##########
+# routes #
+##########
 
-# Method related to the External API
 @app.route('/add', methods = ['GET'])
 def show_add_form():
 	return render_template('add.html')
@@ -28,17 +31,15 @@ def show_add_form():
 @app.route('/add', methods = ['POST'])
 def add():
 	link = request.form["link"]
-	tags = [{"tag" :request.form["tag"]}]
-	comments = [{"comment": request.form["comment"]}]
-	print link
-	print tags
-	print comments
+	tags = {"tag" :request.form["tag"]}
+	comments = {"comment": request.form["comment"]}
+
+	headers = {'Content-type': 'application/json'}
 
 	payload = {'link': link}
 	json_payload = json.dumps(payload)
-	print json_payload
+
 	r = requests.post(json_api_string + "/add", json_payload)
-	print r.status_code
 	return redirect(url_for('list'))
 
 @app.route('/modify/<id>')
