@@ -78,7 +78,8 @@ public class MetaTagDAOImpl implements MetaTagDAO{
         	System.out.println("No MetaTag found with id=" + hyperlinkId);
 	}
 	
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	public MetaTag getById(long id) throws DataAccessException {
 		 String query = "select id, tag, hyperlinkid from MetaTag where id = ?";
 		 
@@ -106,6 +107,7 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 	}
 }
 
+@SuppressWarnings("rawtypes")
 class MetaTagMapper implements RowMapper {    
 	 public MetaTag mapRow(ResultSet rs, int rowNum) throws SQLException {    
 	  MetaTag metaTag = new MetaTag();    

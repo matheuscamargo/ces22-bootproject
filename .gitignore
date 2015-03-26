@@ -3,6 +3,7 @@
 /bin/
 target/
 venv/
+backend/spring-workspace/spring/target
  
 # OS Files #
 .DS_Store

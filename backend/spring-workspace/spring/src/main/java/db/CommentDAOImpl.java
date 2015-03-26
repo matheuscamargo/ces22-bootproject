@@ -77,7 +77,8 @@ public class CommentDAOImpl implements CommentDAO {
          	System.out.println("No Comment found with hypid=" + hyperlinkId);
     }
 	
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	public Comment getById(long id) throws DataAccessException {
 		 String query = "select id, comment, hyperlinkid from Comment where id = ?";
 		 
@@ -105,6 +106,7 @@ public class CommentDAOImpl implements CommentDAO {
 	}
 }
 
+@SuppressWarnings("rawtypes")
 class CommentMapper implements RowMapper {    
 	 public Comment mapRow(ResultSet rs, int rowNum) throws SQLException {    
 	  Comment comment = new Comment();    
