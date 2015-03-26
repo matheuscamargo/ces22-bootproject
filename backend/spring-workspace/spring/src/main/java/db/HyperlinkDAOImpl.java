@@ -109,7 +109,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	}
 	
 	public void deleteById (long id) throws DataAccessException {
-        String query = "delete from Hyperlink WHERE id=:id";
+        String query = "DELETE FROM Hyperlink WHERE id=:id";
          
         Map<String, Object> params = new HashMap<String, Object>();
     	params.put("id", id);
@@ -128,7 +128,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 		 Hyperlink hyp;
 		 
 		 try {
-		 String query = "SELECT * from Hyperlink WHERE id = :id";
+		 String query = "SELECT * FROM Hyperlink WHERE id = :id";
 		 Map<String, Object> params = new HashMap<String, Object>();
 		 params.put("id", id);
 		 
@@ -150,16 +150,16 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	
 	public List<Hyperlink> getAllWithTag(MetaTag mtag) throws DataAccessException {
 		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
-	        		+ " 0 as type, mt.tag as field, mt.id as cid from "
-	        		+ " (SELECT h.id, h.link, h.created, h.lastEdited from Hyperlink h"
-	        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId WHERE mt.tag=:tag) h"
-	        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId"
+	        		+ " 0 AS type, mt.tag AS field, mt.id AS cid FROM "
+	        		+ " (SELECT h.id, h.link, h.created, h.lastEdited FROM Hyperlink h"
+	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE mt.tag=:tag) h"
+	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId"
 	        		+ " UNION"
 	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
-	        		+ " 1 as type, c.comment as field, c.id as cid from"
-	        		+ " (SELECT h.id, h.link, h.created, h.lastEdited from Hyperlink h"
-	        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId WHERE mt.tag=:tag) h"
-	        		+ " inner join Comment c on h.id = c.hyperlinkId";
+	        		+ " 1 AS type, c.comment AS field, c.id AS cid FROM"
+	        		+ " (SELECT h.id, h.link, h.created, h.lastEdited FROM Hyperlink h"
+	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE mt.tag=:tag) h"
+	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId";
 	        		 
 	        List<Hyperlink> hypList;
 	        
@@ -174,12 +174,12 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	
 	public List<Hyperlink> getAllWithLink(String link) throws DataAccessException {
 		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
-	        		+ " 0 as type, mt.tag as field, mt.id as cid  from  Hyperlink h"
-	        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId WHERE h.link=:link"
+	        		+ " 0 AS type, mt.tag AS field, mt.id AS cid  FROM  Hyperlink h"
+	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE h.link=:link"
 	        		+ " UNION"
 	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
-	        		+ " 1 as type, c.comment as field, c.id as cid from  Hyperlink h"
-	        		+ " inner join Comment c on h.id = c.hyperlinkId WHERE h.link=:link";
+	        		+ " 1 AS type, c.comment AS field, c.id AS cid FROM  Hyperlink h"
+	        		+ " LEFT JOIN Comment ON on h.id = c.hyperlinkId WHERE h.link=:link";
 
 	        List<Hyperlink> hypList;
 	        
@@ -194,12 +194,12 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	
 	public List<Hyperlink> getAll() throws DataAccessException {
         String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
-        		+ " 0 as type, mt.tag as field, mt.id as cid  from  Hyperlink h"
-        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId"
+        		+ " 0 AS type, mt.tag AS field, mt.id AS cid  FROM  Hyperlink h"
+        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId"
         		+ " UNION"
         		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
-        		+ " 1 as type, c.comment as field, c.id as cid from  Hyperlink h"
-        		+ " inner join Comment c on h.id = c.hyperlinkId";
+        		+ " 1 AS type, c.comment as field, c.id as cid FROM  Hyperlink h"
+        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId";
         		 
         List<Hyperlink> hypList;
  
@@ -231,14 +231,14 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 			else hyp = hypMap.get(id);
 			
 			//MetaTag row
-			if (((Long)rs.get("type")).intValue() == 0) {
+			if (rs.get("field") != null && ((Long)rs.get("type")).intValue() == 0) {
 				MetaTag mt = new MetaTag((Integer)rs.get("cid"),
 										(String)rs.get("field"),
 										 hyp.getId());
 				hyp.getMetaTags().add(mt);
 			}
 			//Comments row
-			else {
+			else if (rs.get("field") != null){
 				Comment com = new Comment((Integer)rs.get("cid"),
 										(String)rs.get("field"),
 											hyp.getId());
