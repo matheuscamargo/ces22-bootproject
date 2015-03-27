@@ -14,11 +14,11 @@ public interface HyperlinkService {
 	public void update (Hyperlink hyperlink) throws DataAccessException;
 	public boolean deleteById (long id) throws DataAccessException;
 	
-	public boolean addMetaTag (MetaTag tag) throws DataAccessException;
+	public void addMetaTag (MetaTag tag) throws DataAccessException;
 	public MetaTag getMetaTagById (long id) throws DataAccessException;
 	public boolean deleteMetaTag (long id) throws DataAccessException;
 	
-	public boolean addComment (Comment comment) throws DataAccessException;
+	public void addComment (Comment comment) throws DataAccessException;
 	public Comment getCommentById (long id) throws DataAccessException;
 	public boolean editComment (Comment comment) throws DataAccessException;
 	public boolean deleteComment (long id) throws DataAccessException;

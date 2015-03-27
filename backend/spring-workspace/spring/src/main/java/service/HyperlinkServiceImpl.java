@@ -16,10 +16,6 @@ import db.MetaTagDAO;
 
 public class HyperlinkServiceImpl implements HyperlinkService {
 	
-	static final int MAX_COMMENTS = 20;
-	static final int MAX_METATAGS = 20;
-	static final int MAX_HYPERLINKS = 100;
-	
 	//references to others tables
 	private CommentDAO commentDAO;
 	private MetaTagDAO metaTagDAO;
@@ -34,7 +30,7 @@ public class HyperlinkServiceImpl implements HyperlinkService {
 	
 	@Override
 	public long save (Hyperlink hyperlink) throws DataAccessException {
-		return hyperlinkDAO.save(hyperlink);
+			return hyperlinkDAO.save(hyperlink);
 	}
 	
 	@Override
@@ -48,18 +44,8 @@ public class HyperlinkServiceImpl implements HyperlinkService {
 	}
 	
 	@Override
-	public boolean addMetaTag (MetaTag tag) throws DataAccessException {
-		System.out.println("tag = " + tag.getHyperlinkId());
-		int numberOfMetaTags = metaTagDAO.countMetaTagsByHyperlinkId
-							  (tag.getHyperlinkId());
-		
-		//security - limit number of metatags per hyperlink
-		if (numberOfMetaTags < MAX_METATAGS) {
-			System.out.println("In if " + numberOfMetaTags);
+	public void addMetaTag (MetaTag tag) throws DataAccessException {
 			metaTagDAO.save(tag);
-			return true;
-		}
-		return false;
 	}
 	
 	@Override
@@ -73,17 +59,8 @@ public class HyperlinkServiceImpl implements HyperlinkService {
 	}
 	
 	@Override
-	public boolean addComment (Comment comment) throws DataAccessException {
-		int numberOfComments = commentDAO.countCommentsByHyperlinkId
-				  (comment.getHyperlinkId());
-		
-		System.out.println("numberOfComment = " + numberOfComments);
-		//security - limit number of metatags per hyperlink
-		if (numberOfComments < MAX_COMMENTS) {
-			commentDAO.save(comment);
-			return true;
-		}
-		return false;
+	public void addComment (Comment comment) throws DataAccessException {
+		commentDAO.save(comment);
 	}
 	
 	@Override

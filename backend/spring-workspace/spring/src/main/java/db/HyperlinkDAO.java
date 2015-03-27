@@ -14,7 +14,7 @@ public interface HyperlinkDAO {
 	public void update (Hyperlink hyperlink) throws DataAccessException;
 	public boolean deleteById (long id) throws DataAccessException;
 	
-	public int countHyperlinks() throws DataAccessException;
+	public long countHyperlinks() throws DataAccessException;
 	
 	public Hyperlink getById(long id) throws DataAccessException;
 	public List<Hyperlink> getAllWithTag(MetaTag tag) throws DataAccessException;

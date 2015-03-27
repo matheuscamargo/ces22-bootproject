@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import service.HyperlinkService;
+import utils.DataBaseIsFullException;
 import db.CommentDAO;
 import db.HyperlinkDAO;
 import db.MetaTagDAO;
@@ -51,8 +52,10 @@ public class HyperlinkAPIController {
     public boolean addMetaTag(@RequestBody MetaTag tag) {
     	logger.info("Start addMetaTag.");
     	try {
-    		return hyperlinkService.addMetaTag(tag);
+    		hyperlinkService.addMetaTag(tag);
+    		return true;
     	}
+    	
     	catch (DataAccessException ex) {
     		return false;
     	}
@@ -61,7 +64,8 @@ public class HyperlinkAPIController {
     public boolean addComment(@RequestBody Comment comment) {
     	logger.info("Start addComment.");
     	try {
-    		return hyperlinkService.addComment(comment);
+    		hyperlinkService.addComment(comment);
+    		return true;
     	}
     	catch (DataAccessException ex) {
     		return false;

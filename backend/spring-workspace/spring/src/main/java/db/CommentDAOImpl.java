@@ -13,11 +13,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import utils.DataBaseIsFullException;
 import model.Comment;
 
 //class that deals with database access to Comment table
 public class CommentDAOImpl implements CommentDAO {
 	static final int MAX_COMMENTS = 20;
+	
 	private JdbcTemplate jdbcTemplate;
 	
     @Autowired
@@ -27,11 +29,19 @@ public class CommentDAOImpl implements CommentDAO {
 	
     @Override
 	public void save (Comment comment)  throws DataAccessException{
+    	
 		String query = "INSERT INTO Comment (comment, hyperlinkid) VALUES (?,?)";
 	
         Object[] args = new Object[] {comment.getComment(),
         							  comment.getHyperlinkId()};
-         
+        
+		int numberOfMetaTags = countCommentsByHyperlinkId(comment.getHyperlinkId());
+		
+		//security - limit number of metatags per hyperlink
+		if (numberOfMetaTags >= MAX_COMMENTS) {
+			throw new DataBaseIsFullException("Too many comments");
+		}
+		
         int out = jdbcTemplate.update(query, args);
          
         if(out !=0){

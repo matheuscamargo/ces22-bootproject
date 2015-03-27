@@ -18,6 +18,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
+import utils.DataBaseIsFullException;
+
 import java.sql.ResultSet;  
 
 import model.Hyperlink;
@@ -52,7 +54,13 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	
     @Override
 	public long save (Hyperlink hyperlink) throws DataAccessException {
-    	
+    	long numberOfHyperlinks = countHyperlinks();
+
+		//security - limit number of hyperlinks in database
+		if (numberOfHyperlinks >= MAX_HYPERLINKS) {
+			throw new DataBaseIsFullException("Too many hyperlinks in db");
+		}
+		
     	//hyperlinkId
     	Number hypId = insertHyp.executeAndReturnKey(
     			createHyperlinkParameterSource(hyperlink));
@@ -128,14 +136,14 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	}
 	
 	@Override
-	public int countHyperlinks() throws DataAccessException {
+	public long countHyperlinks() throws DataAccessException {
 		String query = "SELECT COUNT(*) AS count FROM Hyperlink";
-		int numberOfHyperlinks;
+		long numberOfHyperlinks;
 		
 		Map<String, Object> rs = namedParameterJdbcTemplate.queryForMap(query,
 				new HashMap<String, Object>());
 		
-		numberOfHyperlinks = (Integer)rs.get("count");
+		numberOfHyperlinks =  (Long)rs.get("count");
 		
 		return numberOfHyperlinks;
 	}

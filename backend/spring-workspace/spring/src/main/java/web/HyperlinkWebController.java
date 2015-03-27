@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import service.HyperlinkService;
+import utils.DataBaseIsFullException;
 import db.CommentDAO;
 import db.HyperlinkDAO;
 import db.MetaTagDAO;
@@ -47,6 +48,11 @@ public class HyperlinkWebController{
     		model.addAttribute("hyperlink", hyperlinkService.getById(id));
     		model.addAttribute("exists", true);
         	return "redirect:/show/" + id;
+    	}
+    	catch (DataBaseIsFullException ex) {
+    		//faz o que vc quiser
+    		model.addAttribute("error", 1);
+    		return "add";
     	}
     	catch (DataAccessException ex) {
     		model.addAttribute("error", 1);
@@ -80,6 +86,13 @@ public class HyperlinkWebController{
     		model.addAttribute("error", 0);
     		return "redirect:/show/" + tag.getHyperlinkId();
     	}
+    	
+    	catch (DataBaseIsFullException ex) {
+    		//faz o que vc quiser
+      		model.addAttribute("error", 2);
+    		return "addtag";
+    	}
+    	
     	catch (DataAccessException ex) {
     		model.addAttribute("error", 2);
     		return "addtag";

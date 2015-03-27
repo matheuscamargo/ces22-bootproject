@@ -13,6 +13,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import utils.DataBaseIsFullException;
 import model.MetaTag;
 
 //class that deals with database access to MetaTag table
@@ -28,10 +29,17 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 	
     @Override
 	public void save (MetaTag metaTag) throws DataAccessException {
-		String query = "insert into MetaTag (tag, hyperlinkid) values (?,?)";
+		String query = "INSERT INTO MetaTag (tag, hyperlinkid) VALUES (?,?)";
 	
         Object[] args = new Object[] {metaTag.getTag(),
         							  metaTag.getHyperlinkId()};
+        
+		int numberOfMetaTags = countMetaTagsByHyperlinkId(metaTag.getHyperlinkId());
+		
+		//security - limit number of metatags per hyperlink
+		if (numberOfMetaTags >= MAX_METATAGS) {
+			throw new DataBaseIsFullException("Too many metatags");
+		}
          
         int out = jdbcTemplate.update(query, args);
          
@@ -42,7 +50,7 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 	
     @Override
 	public void update (MetaTag metaTag) throws DataAccessException {
-        String query = "update MetaTag set tag=?, hyperlinkid=? where id=?";
+        String query = "UPDATE MetaTag SET tag=?, hyperlinkid=? WHERE id=?";
 
         Object[] args = new Object[] {metaTag.getTag(),
         						      metaTag.getHyperlinkId(),
@@ -58,7 +66,7 @@ public class MetaTagDAOImpl implements MetaTagDAO{
     
     @Override
 	public boolean deleteById (long id) throws DataAccessException {
-        String query = "delete from MetaTag where id=?";
+        String query = "DELETE FROM MetaTag WHERE id=?";
          
         int out = jdbcTemplate.update(query, id);
         if(out !=0){
@@ -73,7 +81,7 @@ public class MetaTagDAOImpl implements MetaTagDAO{
     
     @Override
 	public void deleteByHyperlinkId (long hyperlinkId) throws DataAccessException {
-        String query = "delete from MetaTag where hyperlinkId=?";
+        String query = "DELETE FROM MetaTag WHERE hyperlinkId=?";
          
         int out = jdbcTemplate.update(query, hyperlinkId);
         if(out !=0){
@@ -107,7 +115,7 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 	}
 	@Override
 	public List<MetaTag> getByHyperLinkId(long hyperLinkId) throws DataAccessException {
-		 String query = "select id, tag, hyperlinkid from MetaTag where hyperlinkid = ?";
+		 String query = "SELECT id, tag, hyperlinkid FROM MetaTag WHERE hyperlinkid = ?";
 		 //results
 		 List<MetaTag> mtList = new ArrayList<MetaTag>();
 		 
