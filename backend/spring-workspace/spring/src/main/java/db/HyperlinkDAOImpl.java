@@ -26,6 +26,7 @@ import model.Comment;
 
 //class that deals with database access to Hyperlink table
 public class HyperlinkDAOImpl implements HyperlinkDAO{
+	static final int MAX_HYPERLINKS = 20;
 	
 	//references to others tables
 	private CommentDAO commentDAO;
@@ -60,24 +61,21 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 		System.out.println("Saved hyperlink");
 		
 	    //save comments
-		if (hyperlink.getComments().size() > 0) {
-		    for (Comment comment: hyperlink.getComments()) {
-		    	comment.setHyperlinkId(hypId.longValue());
-		    	commentDAO.save(comment);
-		   	}
-		}
+	    for (Comment comment: hyperlink.getComments()) {
+	    	comment.setHyperlinkId(hypId.longValue());
+	    	commentDAO.save(comment);
+	   	}
 	    	
 	   	//save metatags
-		if (hyperlink.getMetaTags().size() > 0) {
-		    for (MetaTag metaTag: hyperlink.getMetaTags()) {
-		    	metaTag.setHyperlinkId(hypId.longValue());
-		    	metaTagDAO.save(metaTag);
-	    	}
-		}
+	    for (MetaTag metaTag: hyperlink.getMetaTags()) {
+	    	metaTag.setHyperlinkId(hypId.longValue());
+	    	metaTagDAO.save(metaTag);
+    	}
 
 		return (Long) hypId;
 	}
   
+    @Override
 	public void update (Hyperlink hyperlink) throws DataAccessException {
 		String query = "UPDATE Hyperlink SET link=:link, lastEdited=:lastEdited"
 				+ " WHERE id=:id";
@@ -108,6 +106,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 				.addValue("lastEdited", new Date());
 	}
 	
+	@Override
 	public void deleteById (long id) throws DataAccessException {
         String query = "DELETE FROM Hyperlink WHERE id=:id";
          
@@ -124,6 +123,20 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
         }else System.out.println("No Employee found with id="+id);
 	}
 	
+	@Override
+	public int countHyperlinks() throws DataAccessException {
+		String query = "SELECT COUNT(*) AS count FROM Hyperlink";
+		int numberOfHyperlinks;
+		
+		Map<String, Object> rs = namedParameterJdbcTemplate.queryForMap(query,
+				new HashMap<String, Object>());
+		
+		numberOfHyperlinks = (Integer)rs.get("count");
+		
+		return numberOfHyperlinks;
+	}
+	
+	@Override
 	public Hyperlink getById(long id) throws DataAccessException {
 		 Hyperlink hyp;
 		 
@@ -148,6 +161,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 		 return hyp;
 	}
 	
+	@Override
 	public List<Hyperlink> getAllWithTag(MetaTag mtag) throws DataAccessException {
 		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 0 AS type, mt.tag AS field, mt.id AS cid FROM "
@@ -172,6 +186,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 			return hypList;
 	}
 	
+	@Override
 	public List<Hyperlink> getAllWithLink(String link) throws DataAccessException {
 		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 0 AS type, mt.tag AS field, mt.id AS cid  FROM  Hyperlink h"
@@ -179,7 +194,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	        		+ " UNION"
 	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 1 AS type, c.comment AS field, c.id AS cid FROM  Hyperlink h"
-	        		+ " LEFT JOIN Comment ON on h.id = c.hyperlinkId WHERE h.link=:link";
+	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId WHERE h.link=:link";
 
 	        List<Hyperlink> hypList;
 	        
@@ -192,6 +207,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 			return hypList;
 	}
 	
+	@Override
 	public List<Hyperlink> getAll() throws DataAccessException {
         String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
         		+ " 0 AS type, mt.tag AS field, mt.id AS cid  FROM  Hyperlink h"

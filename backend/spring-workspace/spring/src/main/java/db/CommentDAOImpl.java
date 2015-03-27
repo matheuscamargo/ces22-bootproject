@@ -17,6 +17,7 @@ import model.Comment;
 
 //class that deals with database access to Comment table
 public class CommentDAOImpl implements CommentDAO {
+	static final int MAX_COMMENTS = 20;
 	private JdbcTemplate jdbcTemplate;
 	
     @Autowired
@@ -26,7 +27,7 @@ public class CommentDAOImpl implements CommentDAO {
 	
     @Override
 	public void save (Comment comment)  throws DataAccessException{
-		String query = "insert into Comment (comment, hyperlinkid) values (?,?)";
+		String query = "INSERT INTO Comment (comment, hyperlinkid) VALUES (?,?)";
 	
         Object[] args = new Object[] {comment.getComment(),
         							  comment.getHyperlinkId()};
@@ -39,8 +40,8 @@ public class CommentDAOImpl implements CommentDAO {
 	}
 	
     @Override
-	public void update (Comment comment)  throws DataAccessException{
-        String query = "update Comment set comment=?, hyperlinkid=? where id=?";
+	public boolean update (Comment comment)  throws DataAccessException{
+        String query = "UPDATE Comment SET comment=?, hyperlinkid=? WHERE id=?";
 
         Object[] args = new Object[] {comment.getComment(),
 				  comment.getHyperlinkId(),
@@ -48,26 +49,34 @@ public class CommentDAOImpl implements CommentDAO {
          
         int out = jdbcTemplate.update(query, args);
         if(out !=0){
-            System.out.println("Comment updated with id = " + comment.getId());
+        	//successfully updated
+        	return true;
         }
-        else 
-        	System.out.println("No Comment found with id = " + comment.getId());
+        else {
+        	//no elements with id
+        	return false;
+        }
     }
     
     @Override
-	public void deleteById (long id)  throws DataAccessException{
-        String query = "delete from Comment where id=?";
+	public boolean deleteById (long id)  throws DataAccessException{
+        String query = "DELETE FROM Comment WHERE id=?";
          
         int out = jdbcTemplate.update(query, id);
-        if(out !=0){
-            System.out.println("Comment deleted with id= " + id);
+        
+        if (out != 0) {
+        	//successfully deleted
+        	return true;
         }
-        else 
-        	System.out.println("No Comment found with id=" + id);
+        
+        else {
+        	//no elements with id
+        	return false;
+        }
 	}
     
     public void deleteByHyperlinkId (long hyperlinkId)  throws DataAccessException{
-    	 String query = "delete from Comment where hyperlinkId=?";
+    	 String query = "delete FROM Comment WHERE hyperlinkId=?";
          
          int out = jdbcTemplate.update(query, hyperlinkId);
          if(out !=0){
@@ -76,11 +85,23 @@ public class CommentDAOImpl implements CommentDAO {
          else 
          	System.out.println("No Comment found with hypid=" + hyperlinkId);
     }
+    
+    @Override
+    public int countCommentsByHyperlinkId (long hypId) throws DataAccessException {
+    	String query = "SELECT COUNT(*) AS count From Comment"
+    				+ " WHERE hyperlinkId=:hyperlinkId";
+    	int numberOfComments;
+        
+        Map<String,Object> rs = jdbcTemplate.queryForMap(query, new Object[] {hypId});
+        numberOfComments = (Integer)rs.get("count");
+        
+        return numberOfComments;  
+    }
 	
     @SuppressWarnings("unchecked")
 	@Override
 	public Comment getById(long id) throws DataAccessException {
-		 String query = "select id, comment, hyperlinkid from Comment where id = ?";
+		 String query = "SELECT id, comment, hyperlinkid FROM Comment WHERE id = ?";
 		 
 		 Comment com = jdbcTemplate.queryForObject(query, new Object[]{id},
 				 								   new CommentMapper());
@@ -89,7 +110,7 @@ public class CommentDAOImpl implements CommentDAO {
 	}
 	@Override
 	public List<Comment> getByHyperLinkId(long hyperLinkId) throws DataAccessException {
-		 String query = "select id, comment, hyperlinkid from Comment where hyperlinkid = ?";
+		 String query = "SELECT id, comment, hyperlinkid FROM Comment WHERE hyperlinkid = ?";
 		 //results
 		 List<Comment> comList = new ArrayList<Comment>();
 		 

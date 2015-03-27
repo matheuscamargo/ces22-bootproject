@@ -17,6 +17,8 @@ import model.MetaTag;
 
 //class that deals with database access to MetaTag table
 public class MetaTagDAOImpl implements MetaTagDAO{
+	static final int MAX_METATAGS = 20;
+	
 	private JdbcTemplate jdbcTemplate;
 	
     @Autowired
@@ -55,15 +57,18 @@ public class MetaTagDAOImpl implements MetaTagDAO{
     }
     
     @Override
-	public void deleteById (long id) throws DataAccessException {
+	public boolean deleteById (long id) throws DataAccessException {
         String query = "delete from MetaTag where id=?";
          
         int out = jdbcTemplate.update(query, id);
         if(out !=0){
-            System.out.println("MetaTag deleted with id= " + id);
+        	//Successfully deleted MetaTag
+        	return true;
         }
-        else 
-        	System.out.println("No MetaTag found with id=" + id);
+        else {
+        	//Could not delete MetaTag
+        	return false;
+        }
 	}
     
     @Override
@@ -78,6 +83,18 @@ public class MetaTagDAOImpl implements MetaTagDAO{
         	System.out.println("No MetaTag found with id=" + hyperlinkId);
 	}
 	
+    @Override
+    public int countMetaTagsByHyperlinkId (long hypId) throws DataAccessException {
+    	String query = "SELECT COUNT(*) AS count From MetaTag"
+    				+ " WHERE hyperlinkId=:hyperlinkId";
+    	int numberOfMetaTags;
+        
+        Map<String,Object> rs = jdbcTemplate.queryForMap(query, new Object[] {hypId});
+        numberOfMetaTags = (Integer)rs.get("count");
+        
+        return numberOfMetaTags;  
+    }
+    
     @SuppressWarnings("unchecked")
 	@Override
 	public MetaTag getById(long id) throws DataAccessException {

@@ -30,11 +30,11 @@ public class Application implements CommandLineRunner {
         SpringApplication.run(Application.class, args);
         System.out.println("SELECT h.id, h.link, h.created, h.lastEdited,"
         		+ " 0 AS type, mt.tag AS field, mt.id AS cid  FROM  Hyperlink h"
-        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId"
+        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE h.link=:link"
         		+ " UNION"
         		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
-        		+ " 1 AS type, c.comment as field, c.id as cid FROM  Hyperlink h"
-        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId");
+        		+ " 1 AS type, c.comment AS field, c.id AS cid FROM  Hyperlink h"
+        		+ " LEFT JOIN Comment ON on h.id = c.hyperlinkId WHERE h.link=:link");
     }
 
     @Override
