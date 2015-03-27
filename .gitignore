@@ -4,6 +4,10 @@
 target/
 venv/
 backend/spring-workspace/spring/target
+backend/spring-workspace/spring/src/main/resources/css/
+backend/spring-workspace/spring/src/main/resources/fonts/
+backend/spring-workspace/spring/src/main/resources/js/
+
  
 # OS Files #
 .DS_Store

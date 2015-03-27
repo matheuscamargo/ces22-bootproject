@@ -6,8 +6,7 @@
 </head>
 <body>
 	<h1>
-		<span  th:if="${deleted}" th:text="'Hyperlink of id ' + ${id} + ' succesfully deleted!'"></span>
-		<span  th:unless="${deleted}" th:text="'Hyperlink of id ' + ${id} + ' not found!'"></span>
+		<span  th:text="${message}"></span>
 	</h1>	
 	<br/> 
 	<a href="index.html" th:href="@{/}" th:text="'Main page'" ></a>

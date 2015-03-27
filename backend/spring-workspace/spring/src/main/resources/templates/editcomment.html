@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Hyperlink database - Server view</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1 th:if="${error}" th:text="'No entry with id ' + ${id}"></h1>
+	<div th:unless="${error}">
+		<h1 th:text="'Editing comment of ' + ${hyperlink.link}"></h1>
+		<form action="#" th:action="@{/editcomment}" th:object="${comment}" method="post">	
+	    	<input type="hidden" th:field="*{id}"/>
+	    	<input type="hidden" th:field="*{hyperlinkId}"/>
+	    	<p>Comment name: <input type="text" th:field="*{comment}" /></p>
+	        <p><input type="submit" value="Submit" /></p>
+	    </form>
+	</div>
+	<br/>
+	<a href="index.html" th:href="@{/}" th:text="'Main page'" ></a>
+</body>
+</html>

@@ -17,12 +17,19 @@
 			<li th:text="'Link: ' + ${hyperlink.link}"></li>
 			<li>Tags: 
 				<ul>
-					<li th:each="tag : ${hyperlink.metaTags}" th:text="${tag.tag}"></li>
+					<li th:each="tag : ${hyperlink.metaTags}">
+						<span th:text="${tag.tag} "></span>
+						<a href="deletetag.html" th:href="@{/deletetag/{id}(id=${tag.id})}" th:text="Delete" ></a>
+					</li>
 				</ul>
 			</li>
 			<li>Comments: 
 				<ul>
-					<li th:each="comment : ${hyperlink.comments}" th:text="${comment.comment}"></li>
+					<li th:each="comment : ${hyperlink.comments}">
+						<span th:text="${comment.comment}"></span>
+						<a href="editcomment.html" th:href="@{/editcomment/{id}(id=${comment.id})}" th:text="Edit " ></a>
+						<a href="deletecomment.html" th:href="@{/deletecomment/{id}(id=${comment.id})}" th:text="Delete" ></a>
+					</li>
 				</ul>
 			</li>
 			<li th:text="'Added at: ' + ${hyperlink.addedAt}"></li>

@@ -39,8 +39,7 @@ public class HyperlinkWebController{
     	model.addAttribute("hyperlink", new Hyperlink());
     	model.addAttribute("error", 0);
         return "add";
-    }
-    
+    }    
     @RequestMapping(value = "/add", method = RequestMethod.POST) // OK
     public String addHyperlinkSubmit(@ModelAttribute Hyperlink hyperlink, Model model) {
     	logger.info("Start addHyperlink POST.");
@@ -55,8 +54,7 @@ public class HyperlinkWebController{
     		model.addAttribute("error", 1);
     		return "add";
     	}
-    }
-    
+    }    
     @RequestMapping(value = "/addtag/{id}", method = RequestMethod.GET) // OK
     public String addTagForm(@PathVariable("id") long id, Model model) {
     	logger.info("Start addTag GET.");    	
@@ -72,8 +70,7 @@ public class HyperlinkWebController{
     		model.addAttribute("error", 1);
     	}
     	return "addtag";
-    }
-    
+    }    
     @RequestMapping(value = "/addtag", method = RequestMethod.POST) // OK
     public String addTagSubmit(@ModelAttribute MetaTag tag, Model model) {
     	logger.info("Start addTag POST.");
@@ -88,8 +85,7 @@ public class HyperlinkWebController{
     		model.addAttribute("error", 2);
     		return "addtag";
     	}
-    }
-    
+    }    
     @RequestMapping(value = "/addcomment/{id}", method = RequestMethod.GET) // OK
     public String addCommentForm(@PathVariable("id") long id, Model model) {
     	logger.info("Start addCommand GET.");
@@ -105,8 +101,7 @@ public class HyperlinkWebController{
     		model.addAttribute("error", 1);
     	}
     	return "addcomment";
-    }
-    
+    }    
     @RequestMapping(value = "/addcomment", method = RequestMethod.POST) // OK
     public String addCommentSubmit(@ModelAttribute Comment comment, Model model) {
     	logger.info("Start addCommand POST.");
@@ -121,8 +116,7 @@ public class HyperlinkWebController{
     		model.addAttribute("error", 2);
     		return "addcomment";
     	}
-    }
-    
+    }    
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET) // OK
     public String editHyperlinkForm(@PathVariable("id") long id, Model model) {
     	logger.info("Start edit GET.");
@@ -135,8 +129,7 @@ public class HyperlinkWebController{
     		model.addAttribute("error", 1);
     	}
     	return "edit";
-    }
-    
+    }    
     @RequestMapping(value = "/edit", method = RequestMethod.POST) // OK
     public String editHyperlinkSubmit(@ModelAttribute Hyperlink hyperlink, Model model) {
     	logger.info("Start edit POST.");
@@ -150,8 +143,37 @@ public class HyperlinkWebController{
     		model.addAttribute("error", 2);
     		return "edit";
     	}
-    }
-    
+    }    
+    @RequestMapping(value = "/editcomment/{id}", method = RequestMethod.GET) // TEST IT!
+    public String editCommentForm(@PathVariable("id") long id, Model model) {
+    	logger.info("Start editCommand GET.");
+    	try {
+        	Comment comment = commentDAO.getById(id);
+        	Hyperlink hyperlink = hyperlinkDAO.getById(comment.getHyperlinkId());
+    		model.addAttribute("comment", comment);
+    		model.addAttribute("hyperlink", hyperlink);
+        	model.addAttribute("error", 0);    		
+    	}
+    	catch (EmptyResultDataAccessException ex) {
+    		model.addAttribute("error", 1);
+    	}
+    	return "editcomment";
+    }    
+    @RequestMapping(value = "/editcomment", method = RequestMethod.POST) // TEST IT!
+    public String editCommentSubmit(@ModelAttribute Comment comment, Model model) {
+    	logger.info("Start editCommand POST.");
+    	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
+    	try {
+    		commentDAO.update(comment);
+    		model.addAttribute("hyperlink", hyperlinkDAO.getById(comment.getHyperlinkId()));
+    		model.addAttribute("error", 0);
+    		return "redirect:/show/" + comment.getHyperlinkId();
+    	}
+    	catch (DataAccessException ex) {
+    		model.addAttribute("error", 2);
+    		return "editcomment";
+    	}
+    }    
     @RequestMapping(value = "/show/{id}", method = RequestMethod.GET) // OK
     public String show(@PathVariable("id") long id, Model model) {
     	logger.info("Start show.");
@@ -163,22 +185,43 @@ public class HyperlinkWebController{
     		model.addAttribute("exists", false);
     	}
     	return "show";
-    }
-    
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET) // OK
+    }    
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET) // TEST IT!
     public String delete(@PathVariable("id") long id, Model model) {
     	logger.info("Start delete.");
     	try {
     		hyperlinkDAO.deleteById(id);
-    		model.addAttribute("deleted", true);
+    		model.addAttribute("message", "Hyperlink with id " + id + " succesfully deleted!");
     	}
     	catch (DataAccessException ex) {
-    		model.addAttribute("deleted", false);
+    		model.addAttribute("message", "Hyperlink with id " + id + " not found!");
     	}
-		model.addAttribute("id", id);
     	return "delete";
-    }
-   
+    }   
+    @RequestMapping(value = "/deletetag/{id}", method = RequestMethod.GET) // TEST IT!
+    public String deleteTag(@PathVariable("id") long id, Model model) {
+    	logger.info("Start deleteComment.");
+    	try {
+    		metaTagDAO.deleteById(id);
+    		model.addAttribute("message", "Tag with id " + id + " succesfully deleted!");
+    	}
+    	catch (DataAccessException ex) {
+    		model.addAttribute("message", "Tag with id " + id + " not found!");
+    	}
+    	return "delete";
+    }   
+    @RequestMapping(value = "/deletecomment/{id}", method = RequestMethod.GET) // TEST IT!
+    public String deleteComment(@PathVariable("id") long id, Model model) {
+    	logger.info("Start deleteComment.");
+    	try {
+    		commentDAO.deleteById(id);
+    		model.addAttribute("message", "Comment with id " + id + " succesfully deleted!");
+    	}
+    	catch (DataAccessException ex) {
+    		model.addAttribute("message", "Comment with id " + id + " not found!");
+    	}
+    	return "delete";
+    }   
     @RequestMapping(value = "/", method = RequestMethod.GET) // OK
     public String getAllHyperlinks(Model model) {
     	logger.info("Start index.");
