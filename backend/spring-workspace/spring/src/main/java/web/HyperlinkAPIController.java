@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import service.HyperlinkService;
 import db.CommentDAO;
 import db.HyperlinkDAO;
 import db.MetaTagDAO;
@@ -37,13 +38,14 @@ public class HyperlinkAPIController {
     HyperlinkDAO hyperlinkDAO = ctx.getBean("hyperlinkDAO", HyperlinkDAO.class);
     MetaTagDAO metaTagDAO = ctx.getBean("metaTagDAO", MetaTagDAO.class);
     CommentDAO commentDAO = ctx.getBean("commentDAO", CommentDAO.class);
+    HyperlinkService hyperlinkService = ctx.getBean("hyperlinkService", HyperlinkService.class);
 
     @RequestMapping(value = "/api/add", method = RequestMethod.POST) // OK
     public Hyperlink addHyperlink(@RequestBody Hyperlink hyperlink) {
     	logger.info("Start addHyperlink.");
     	try {
-    		long id = hyperlinkDAO.save(hyperlink);
-        	return hyperlinkDAO.getById(id);
+    		long id = hyperlinkService.save(hyperlink);
+        	return hyperlinkService.getById(id);
     	}
     	catch (DataAccessException ex) {
     		return null;
