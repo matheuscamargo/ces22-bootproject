@@ -4,11 +4,7 @@ import model.Comment;
 import model.Hyperlink;
 import model.MetaTag;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.dao.DataAccessException;
@@ -52,36 +48,32 @@ public class HyperlinkAPIController {
     	}
     }    
     @RequestMapping(value = "/api/addtag", method = RequestMethod.POST)
-    public Hyperlink addMetaTag(@RequestBody MetaTag tag) {
+    public boolean addMetaTag(@RequestBody MetaTag tag) {
     	logger.info("Start addMetaTag.");
     	try {
-    		hyperlinkDAO.getById(tag.getHyperlinkId());
-    		metaTagDAO.save(tag);
-        	return hyperlinkDAO.getById(tag.getHyperlinkId());
+    		return hyperlinkService.addMetaTag(tag);
     	}
     	catch (DataAccessException ex) {
-    		return null;
+    		return false;
     	}
     }    
     @RequestMapping(value = "/api/addcomment", method = RequestMethod.POST)
-    public Hyperlink addComment(@RequestBody Comment comment) {
+    public boolean addComment(@RequestBody Comment comment) {
     	logger.info("Start addComment.");
     	try {
-    		hyperlinkDAO.getById(comment.getHyperlinkId());
-    		commentDAO.save(comment);
-        	return hyperlinkDAO.getById(comment.getHyperlinkId());
+    		return hyperlinkService.addComment(comment);
     	}
     	catch (DataAccessException ex) {
-    		return null;
+    		return false;
     	}
     }
     @RequestMapping(value = "/api/edit", method = RequestMethod.POST) // OK
     public Hyperlink editHyperlink(@RequestBody Hyperlink hyperlink) {
     	logger.info("Start editHyperlink.");
     	try {
-    		hyperlinkDAO.getById(hyperlink.getId());
-    		hyperlinkDAO.update(hyperlink);
-    		return hyperlinkDAO.getById(hyperlink.getId());
+    		hyperlinkService.getById(hyperlink.getId());
+    		hyperlinkService.update(hyperlink);
+    		return hyperlinkService.getById(hyperlink.getId());
     	}
     	catch (DataAccessException ex) {
     		return null;
@@ -91,9 +83,9 @@ public class HyperlinkAPIController {
     public Hyperlink editComment(@RequestBody Comment comment) {
     	logger.info("Start editComment.");
     	try {
-    		hyperlinkDAO.getById(comment.getHyperlinkId());
-    		commentDAO.update(comment);
-        	return hyperlinkDAO.getById(comment.getHyperlinkId());
+    		hyperlinkService.getById(comment.getHyperlinkId());
+    		hyperlinkService.editComment(comment);
+        	return hyperlinkService.getById(comment.getHyperlinkId());
     	}
     	catch (DataAccessException ex) {
     		return null;
@@ -102,13 +94,13 @@ public class HyperlinkAPIController {
     @RequestMapping(value = "/api", method = RequestMethod.GET) // OK
     public List<Hyperlink> getAllHyperlinks() {
     	logger.info("Start getAllHyperliks.");
-    	return hyperlinkDAO.getAll();
+    	return hyperlinkService.getAll();
     }
     @RequestMapping(value = "/api/show/{id}", method = RequestMethod.GET) // OK
     public Hyperlink show(@PathVariable("id") long id) {
     	logger.info("Start show.");
     	try {
-    		return hyperlinkDAO.getById(id);
+    		return hyperlinkService.getById(id);
     	}
     	catch (EmptyResultDataAccessException ex) {
     		return null;
@@ -118,7 +110,7 @@ public class HyperlinkAPIController {
     public List<Hyperlink> getAllWithTag(@RequestBody MetaTag tag) {
     	logger.info("Start getAllWithTag.");
     	try {
-        	return hyperlinkDAO.getAllWithTag(tag);
+        	return hyperlinkService.getAllWithTag(tag);
     	}
     	catch (DataAccessException ex) {
     		return null;
@@ -128,7 +120,7 @@ public class HyperlinkAPIController {
     public List<Hyperlink> getAllWithHyperlink(@RequestBody Hyperlink hyperlink) {
     	logger.info("Start getAllWithHyperlink.");
     	try {
-        	return hyperlinkDAO.getAllWithLink(hyperlink.getLink());
+        	return hyperlinkService.getAllWithLink(hyperlink.getLink());
     	}
     	catch (DataAccessException ex) {
     		// throw ex;
@@ -136,29 +128,33 @@ public class HyperlinkAPIController {
     	}
     }        
     @RequestMapping(value = "/api/delete/{id}", method = RequestMethod.PUT) // OK
-    public Hyperlink delete(@PathVariable("id") long id) {
+    public boolean delete(@PathVariable("id") long id) {
     	logger.info("Start delete.");
     	try {
-    		Hyperlink hyperlink = hyperlinkDAO.getById(id);
-    		hyperlinkDAO.deleteById(id);
-    		return hyperlink;
+    		return hyperlinkService.deleteById(id);
     	}
     	catch (DataAccessException ex) {
-    		return null;
+    		return false;
     	}
     }
     @RequestMapping(value = "/api/deletetag/{id}", method = RequestMethod.PUT)
-    public Hyperlink deleteMetaTag(@PathVariable("id") long id) {
+    public boolean deleteMetaTag(@PathVariable("id") long id) {
     	logger.info("Start deleteMetaTag.");
-    	try {
-    		long hyperlinkId = metaTagDAO.getById(id).getHyperlinkId();
-    		hyperlinkDAO.getById(hyperlinkId);
-    		metaTagDAO.getById(id);
-    		metaTagDAO.deleteById(id);
-    		return hyperlinkDAO.getById(hyperlinkId);
+    	try {    		
+    		return hyperlinkService.deleteMetaTag(id);
     	}
     	catch (DataAccessException ex) {
-    		return null;
+    		return false;
+    	}
+    }
+    @RequestMapping(value = "/api/deletecomment/{id}", method = RequestMethod.PUT)
+    public boolean deleteComment(@PathVariable("id") long id) {
+    	logger.info("Start deleteComment.");
+    	try {    		
+    		return hyperlinkService.deleteComment(id);
+    	}
+    	catch (DataAccessException ex) {
+    		return false;
     	}
     }
 }

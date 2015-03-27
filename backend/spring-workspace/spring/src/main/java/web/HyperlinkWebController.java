@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import service.HyperlinkService;
 import db.CommentDAO;
 import db.HyperlinkDAO;
 import db.MetaTagDAO;
@@ -29,9 +30,7 @@ public class HyperlinkWebController{
   	ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring/spring-hyper.xml");
      
     //Get DAO beans
-    HyperlinkDAO hyperlinkDAO = ctx.getBean("hyperlinkDAO", HyperlinkDAO.class);
-    MetaTagDAO metaTagDAO = ctx.getBean("metaTagDAO", MetaTagDAO.class);
-    CommentDAO commentDAO = ctx.getBean("commentDAO", CommentDAO.class);
+    HyperlinkService hyperlinkService = ctx.getBean("hyperlinkService", HyperlinkService.class);
 
     @RequestMapping(value = "/add", method = RequestMethod.GET) // OK
     public String addHyperlinkForm(Model model) {
@@ -43,10 +42,9 @@ public class HyperlinkWebController{
     @RequestMapping(value = "/add", method = RequestMethod.POST) // OK
     public String addHyperlinkSubmit(@ModelAttribute Hyperlink hyperlink, Model model) {
     	logger.info("Start addHyperlink POST.");
-    	logger.info(hyperlink.toString());
     	try {
-    		long id = hyperlinkDAO.save(hyperlink);
-    		model.addAttribute("hyperlink", hyperlinkDAO.getById(id));
+    		long id = hyperlinkService.save(hyperlink);
+    		model.addAttribute("hyperlink", hyperlinkService.getById(id));
     		model.addAttribute("exists", true);
         	return "redirect:/show/" + id;
     	}
@@ -59,7 +57,7 @@ public class HyperlinkWebController{
     public String addTagForm(@PathVariable("id") long id, Model model) {
     	logger.info("Start addTag GET.");    	
     	try {
-        	Hyperlink hyperlink = hyperlinkDAO.getById(id);
+        	Hyperlink hyperlink = hyperlinkService.getById(id);
         	MetaTag tag = new MetaTag();
         	tag.setHyperlinkId(id);
     		model.addAttribute("tag", tag);
@@ -76,8 +74,9 @@ public class HyperlinkWebController{
     	logger.info("Start addTag POST.");
     	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
     	try {
-    		metaTagDAO.save(tag);
-    		model.addAttribute("hyperlink", hyperlinkDAO.getById(tag.getHyperlinkId()));
+    		logger.info("Starting debug");
+    		hyperlinkService.addMetaTag(tag);
+    		model.addAttribute("hyperlink", hyperlinkService.getById(tag.getHyperlinkId()));
     		model.addAttribute("error", 0);
     		return "redirect:/show/" + tag.getHyperlinkId();
     	}
@@ -90,7 +89,7 @@ public class HyperlinkWebController{
     public String addCommentForm(@PathVariable("id") long id, Model model) {
     	logger.info("Start addCommand GET.");
     	try {
-        	Hyperlink hyperlink = hyperlinkDAO.getById(id);
+        	Hyperlink hyperlink = hyperlinkService.getById(id);
         	Comment comment = new Comment();
         	comment.setHyperlinkId(id);
     		model.addAttribute("comment", comment);
@@ -107,8 +106,8 @@ public class HyperlinkWebController{
     	logger.info("Start addCommand POST.");
     	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
     	try {
-    		commentDAO.save(comment);
-    		model.addAttribute("hyperlink", hyperlinkDAO.getById(comment.getHyperlinkId()));
+    		hyperlinkService.addComment(comment);
+    		model.addAttribute("hyperlink", hyperlinkService.getById(comment.getHyperlinkId()));
     		model.addAttribute("error", 0);
     		return "redirect:/show/" + comment.getHyperlinkId();
     	}
@@ -121,7 +120,7 @@ public class HyperlinkWebController{
     public String editHyperlinkForm(@PathVariable("id") long id, Model model) {
     	logger.info("Start edit GET.");
     	try {
-        	Hyperlink hyperlink = hyperlinkDAO.getById(id);
+        	Hyperlink hyperlink = hyperlinkService.getById(id);
     		model.addAttribute("hyperlink", hyperlink);
         	model.addAttribute("error", 0);    		
     	}
@@ -134,7 +133,7 @@ public class HyperlinkWebController{
     public String editHyperlinkSubmit(@ModelAttribute Hyperlink hyperlink, Model model) {
     	logger.info("Start edit POST.");
     	try {
-    		hyperlinkDAO.update(hyperlink);
+    		hyperlinkService.update(hyperlink);
     		model.addAttribute("hyperlink", hyperlink);
     		model.addAttribute("exists", true);
     		return "redirect:/show/" + hyperlink.getId();
@@ -148,8 +147,8 @@ public class HyperlinkWebController{
     public String editCommentForm(@PathVariable("id") long id, Model model) {
     	logger.info("Start editCommand GET.");
     	try {
-        	Comment comment = commentDAO.getById(id);
-        	Hyperlink hyperlink = hyperlinkDAO.getById(comment.getHyperlinkId());
+        	Comment comment = hyperlinkService.getCommentById(id);
+        	Hyperlink hyperlink = hyperlinkService.getById(comment.getHyperlinkId());
     		model.addAttribute("comment", comment);
     		model.addAttribute("hyperlink", hyperlink);
         	model.addAttribute("error", 0);    		
@@ -164,8 +163,8 @@ public class HyperlinkWebController{
     	logger.info("Start editCommand POST.");
     	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
     	try {
-    		commentDAO.update(comment);
-    		model.addAttribute("hyperlink", hyperlinkDAO.getById(comment.getHyperlinkId()));
+    		hyperlinkService.editComment(comment);
+    		model.addAttribute("hyperlink", hyperlinkService.getById(comment.getHyperlinkId()));
     		model.addAttribute("error", 0);
     		return "redirect:/show/" + comment.getHyperlinkId();
     	}
@@ -178,7 +177,7 @@ public class HyperlinkWebController{
     public String show(@PathVariable("id") long id, Model model) {
     	logger.info("Start show.");
     	try {
-    		model.addAttribute("hyperlink",	hyperlinkDAO.getById(id));
+    		model.addAttribute("hyperlink",	hyperlinkService.getById(id));
     		model.addAttribute("exists", true);
     	}
     	catch (EmptyResultDataAccessException ex) {
@@ -190,7 +189,7 @@ public class HyperlinkWebController{
     public String delete(@PathVariable("id") long id, Model model) {
     	logger.info("Start delete.");
     	try {
-    		hyperlinkDAO.deleteById(id);
+    		hyperlinkService.deleteById(id);
     		model.addAttribute("message", "Hyperlink with id " + id + " succesfully deleted!");
     	}
     	catch (DataAccessException ex) {
@@ -202,7 +201,7 @@ public class HyperlinkWebController{
     public String deleteTag(@PathVariable("id") long id, Model model) {
     	logger.info("Start deleteComment.");
     	try {
-    		metaTagDAO.deleteById(id);
+    		hyperlinkService.deleteMetaTag(id);
     		model.addAttribute("message", "Tag with id " + id + " succesfully deleted!");
     	}
     	catch (DataAccessException ex) {
@@ -214,7 +213,7 @@ public class HyperlinkWebController{
     public String deleteComment(@PathVariable("id") long id, Model model) {
     	logger.info("Start deleteComment.");
     	try {
-    		commentDAO.deleteById(id);
+    		hyperlinkService.deleteMetaTag(id);
     		model.addAttribute("message", "Comment with id " + id + " succesfully deleted!");
     	}
     	catch (DataAccessException ex) {
@@ -225,8 +224,8 @@ public class HyperlinkWebController{
     @RequestMapping(value = "/", method = RequestMethod.GET) // OK
     public String getAllHyperlinks(Model model) {
     	logger.info("Start index.");
-    	logger.info("List size: " + hyperlinkDAO.getAll().size()); 
-    	model.addAttribute("hyperlinksList", hyperlinkDAO.getAll());
+    	logger.info("List size: " + hyperlinkService.getAll().size()); 
+    	model.addAttribute("hyperlinksList", hyperlinkService.getAll());
     	return "index";
     }
 }

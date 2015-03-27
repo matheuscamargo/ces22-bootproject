@@ -85,14 +85,14 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 	
     @Override
     public int countMetaTagsByHyperlinkId (long hypId) throws DataAccessException {
-    	String query = "SELECT COUNT(*) AS count From MetaTag"
-    				+ " WHERE hyperlinkId=:hyperlinkId";
-    	int numberOfMetaTags;
+    	String query = "SELECT COUNT(*) AS count FROM MetaTag"
+    				+ " WHERE hyperlinkId = ?";
+    	long numberOfMetaTags;
         
         Map<String,Object> rs = jdbcTemplate.queryForMap(query, new Object[] {hypId});
-        numberOfMetaTags = (Integer)rs.get("count");
+        numberOfMetaTags = (Long)rs.get("count");
         
-        return numberOfMetaTags;  
+        return (int)numberOfMetaTags;  
     }
     
     @SuppressWarnings("unchecked")

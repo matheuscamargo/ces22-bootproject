@@ -90,12 +90,12 @@ public class CommentDAOImpl implements CommentDAO {
     public int countCommentsByHyperlinkId (long hypId) throws DataAccessException {
     	String query = "SELECT COUNT(*) AS count From Comment"
     				+ " WHERE hyperlinkId=:hyperlinkId";
-    	int numberOfComments;
+    	long numberOfComments;
         
         Map<String,Object> rs = jdbcTemplate.queryForMap(query, new Object[] {hypId});
-        numberOfComments = (Integer)rs.get("count");
+        numberOfComments = (Long)rs.get("count");
         
-        return numberOfComments;  
+        return (int)numberOfComments;  
     }
 	
     @SuppressWarnings("unchecked")

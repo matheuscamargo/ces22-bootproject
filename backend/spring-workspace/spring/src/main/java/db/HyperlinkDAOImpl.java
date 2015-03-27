@@ -107,7 +107,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	}
 	
 	@Override
-	public void deleteById (long id) throws DataAccessException {
+	public boolean deleteById (long id) throws DataAccessException {
         String query = "DELETE FROM Hyperlink WHERE id=:id";
          
         Map<String, Object> params = new HashMap<String, Object>();
@@ -119,8 +119,12 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
         int out = namedParameterJdbcTemplate.update(query, params);
         
         if(out !=0){
-            System.out.println("Employee deleted with id="+id);
-        }else System.out.println("No Employee found with id="+id);
+        	//Delete succedded
+        	return true;
+        }
+        else {
+        	return false;
+        }
 	}
 	
 	@Override

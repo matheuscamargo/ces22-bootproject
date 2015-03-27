@@ -12,7 +12,7 @@ import model.Comment;
 public interface HyperlinkDAO {
 	public long save (Hyperlink hyperlink) throws DataAccessException;
 	public void update (Hyperlink hyperlink) throws DataAccessException;
-	public void deleteById (long id) throws DataAccessException;
+	public boolean deleteById (long id) throws DataAccessException;
 	
 	public int countHyperlinks() throws DataAccessException;
 	

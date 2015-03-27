@@ -43,17 +43,19 @@ public class HyperlinkServiceImpl implements HyperlinkService {
 	}
 	
 	@Override
-	public void deleteById (long id) throws DataAccessException {
-		hyperlinkDAO.deleteById(id);
+	public boolean deleteById (long id) throws DataAccessException {
+		return hyperlinkDAO.deleteById(id);
 	}
 	
 	@Override
 	public boolean addMetaTag (MetaTag tag) throws DataAccessException {
+		System.out.println("tag = " + tag.getHyperlinkId());
 		int numberOfMetaTags = metaTagDAO.countMetaTagsByHyperlinkId
 							  (tag.getHyperlinkId());
 		
 		//security - limit number of metatags per hyperlink
 		if (numberOfMetaTags < MAX_METATAGS) {
+			System.out.println("In if " + numberOfMetaTags);
 			metaTagDAO.save(tag);
 			return true;
 		}
@@ -61,15 +63,21 @@ public class HyperlinkServiceImpl implements HyperlinkService {
 	}
 	
 	@Override
-	public boolean deleteMetaTag (MetaTag tag) throws DataAccessException {
-		return metaTagDAO.deleteById(tag.getId());
+	public MetaTag getMetaTagById (long id) throws DataAccessException {
+		return metaTagDAO.getById(id);
+	}
+	
+	@Override
+	public boolean deleteMetaTag (long id) throws DataAccessException {
+		return metaTagDAO.deleteById(id);
 	}
 	
 	@Override
 	public boolean addComment (Comment comment) throws DataAccessException {
-		int numberOfComments = metaTagDAO.countMetaTagsByHyperlinkId
+		int numberOfComments = commentDAO.countCommentsByHyperlinkId
 				  (comment.getHyperlinkId());
-
+		
+		System.out.println("numberOfComment = " + numberOfComments);
 		//security - limit number of metatags per hyperlink
 		if (numberOfComments < MAX_COMMENTS) {
 			commentDAO.save(comment);
@@ -79,14 +87,19 @@ public class HyperlinkServiceImpl implements HyperlinkService {
 	}
 	
 	@Override
+	public Comment getCommentById (long id) throws DataAccessException {
+		return commentDAO.getById(id);
+	}
+	
+	@Override
 	public boolean editComment (Comment comment) throws DataAccessException {
 		
 		return commentDAO.update(comment);	
 	}
 	
 	@Override
-	public boolean deleteComment (Comment comment) throws DataAccessException {
-		return commentDAO.deleteById(comment.getId());
+	public boolean deleteComment (long id) throws DataAccessException {
+		return commentDAO.deleteById(id);
 	}
 	
 	@Override
