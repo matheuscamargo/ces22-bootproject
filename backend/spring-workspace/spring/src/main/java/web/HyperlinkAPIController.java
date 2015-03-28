@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import service.HyperlinkService;
 import utils.DataBaseIsFullException;
+import utils.QueryString;
 import db.CommentDAO;
 import db.HyperlinkDAO;
 import db.MetaTagDAO;
@@ -111,20 +112,20 @@ public class HyperlinkAPIController {
     	}
     }
     @RequestMapping(value = "/api/getallwithtag", method = RequestMethod.POST) // OK
-    public List<Hyperlink> getAllWithTag(@RequestBody MetaTag tag) {
+    public List<Hyperlink> getAllWithTag(@RequestBody QueryString q) {
     	logger.info("Start getAllWithTag.");
     	try {
-        	return hyperlinkService.getAllWithTag(tag);
+        	return hyperlinkService.getAllWithTag(new MetaTag(q.getQuery()));
     	}
     	catch (DataAccessException ex) {
     		return null;
     	}
     }    
     @RequestMapping(value = "/api/getallwithhyperlink", method = RequestMethod.POST) // OK
-    public List<Hyperlink> getAllWithHyperlink(@RequestBody Hyperlink hyperlink) {
+    public List<Hyperlink> getAllWithHyperlink(@RequestBody QueryString q) {
     	logger.info("Start getAllWithHyperlink.");
     	try {
-        	return hyperlinkService.getAllWithLink(hyperlink.getLink());
+        	return hyperlinkService.getAllWithLink(q.getQuery());
     	}
     	catch (DataAccessException ex) {
     		// throw ex;

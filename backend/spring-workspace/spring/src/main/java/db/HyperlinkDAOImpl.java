@@ -249,8 +249,8 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 		for (Map<String,Object> rs : results) {
 			//New hyperlink
 			Hyperlink hyp;
-			long id = new Long(((Integer)rs.get("id")).intValue()); //strange cast
-			System.out.println(id);
+			long id = ((Integer)rs.get("id")); //strange cast
+
 			if (!hypMap.containsKey(id)) {
 				hyp = new Hyperlink(id, (String)rs.get("link"));
 				hyp.setCreatedAt((Date)rs.get("created"));
