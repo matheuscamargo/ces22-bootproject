@@ -42,12 +42,12 @@ def add():
 	r = requests.post(json_api_string + "/add", json_payload)
 	return redirect(url_for('list'))
 
-@app.route('/modify/<id>')
-def modify():
-	request = requests.get(json_api_string + "/string")
+@app.route('/delete/<id>', methods = ['GET'])
+def delete(id):
+	request = requests.put(json_api_string + "/delete" + "/" + id)
 	request_json = request.json()
-
-	return render_template('modify.html', entry=request_json)
+	print request_json
+	return redirect(url_for('list'))
 
 @app.route('/', methods = ['GET'])
 def list():
@@ -55,6 +55,19 @@ def list():
 	hyperlinkList = request.json()
 	# return render_template('index.html')
 	return render_template('index.html', entries=hyperlinkList)
+
+@app.route('/search/', methods =['POST'])
+def search():
+	query = request.form["query"]
+	payload = {"query": query}
+
+	headers = {'Content-type': 'application/json'}
+
+	srequest = requests.post(json_api_string + "/getallwithhyperlink", \
+								payload, headers=headers)
+
+	hyperlinkList = srequest.json()
+	return render_template('search.html', entries=hyperlinkList, query=query)
 
 
 if __name__ == '__main__':

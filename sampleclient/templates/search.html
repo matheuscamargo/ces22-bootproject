@@ -1,22 +1,20 @@
 {% extends "base.html" %}
 
-{% block title %}This is an example page{% endblock %}
+{% block title %}Search Results{% endblock %}
 
 {% block content %}
-<h1> Banco de dados </h1>
+<h1> Search results for {{ query }} </h1>
 
+<a href="{{ url_for('list') }}">Home</a>
+<div>
 <form class="form-inline" action="{{ url_for('search') }}" method="post">
   <div class="form-group">
     <label for="inputHyperlink" class="sr-only">Search for Hyperlink</label>
     <input type="text" class="form-control" name="query" placeholder="Hyperlink">
   </div>
-  <button type="submit" class="btn btn-default">Search</button>
+  <button type="submit" class="btn btn-default">Search Again</button>
 </form>
-
-<div>
-<a href="{{ url_for('show_add_form') }}">Add New Hyperlink</a>
 </div>
-
 {% include 'list.html' %}
 
 {% endblock %}

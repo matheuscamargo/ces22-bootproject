@@ -9,7 +9,7 @@
 <tr>
 <td> {{ entry['link'] }} </td>
 <td> {{ entry['id'] }} </td>
-<td> <a href="{{ url_for('modify',id=entry['id']) }}">Modify</a> </td>
+<td> <a href="{{ url_for('delete',id=entry['id']) }}">Delete</a> </td>
 </tr>
 {% endfor %}
 </table>
