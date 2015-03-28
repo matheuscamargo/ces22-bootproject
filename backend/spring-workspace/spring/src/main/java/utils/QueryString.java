@@ -1,10 +1,12 @@
 package utils;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class QueryString {
 	String query;
 	
 	QueryString() {}
-	QueryString(String query) {
+	QueryString(@JsonProperty("query") String query) {
 		this.query = query;
 	}
 	

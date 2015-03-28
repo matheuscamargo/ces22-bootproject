@@ -1,5 +1,5 @@
 -- Create table Hyperlink
-create table Hyperlink (id int AUTO_INCREMENT primary key NOT NULL, link varchar(255) NOT NULL, created DATETIME NOT NULL, lastEdited DATETIME NOT NULL);
+create table Hyperlink (id int AUTO_INCREMENT primary key NOT NULL, link varchar(255), created DATETIME NOT NULL, lastEdited DATETIME NOT NULL);
 
 create table Comment ( id int AUTO_INCREMENT primary key NOT NULL, comment varchar(200) DEFAULT NULL, hyperlinkid int, FOREIGN KEY (hyperlinkid) REFERENCES Hyperlink(id));
 
