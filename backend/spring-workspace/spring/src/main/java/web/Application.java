@@ -29,18 +29,18 @@ public class Application implements CommandLineRunner {
 	//entry point for the web application
     public static void main(String args[]) {
         SpringApplication.run(Application.class, args);
+        System.out.println("SELECT h.id, h.link, h.created, h.lastEdited,"
+	        		+ " 0 AS type, mt.tag AS field, mt.id AS cid  FROM  Hyperlink h"
+	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE h.link LIKE '%google%'"
+	        		+ " UNION"
+	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
+	        		+ " 1 AS type, c.comment AS field, c.id AS cid FROM  Hyperlink h"
+	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId WHERE h.link LIKE '%google'");
     }
 
     @Override
     public void run(String... strings) throws Exception {
-//    	System.out.println("SELECT h.id, h.link, h.created, h.lastEdited,"
-//        		+ " 0 as type, mt.tag as field, mt.id as cid  from  Hyperlink h"
-//        		+ " inner join MetaTag mt on h.id = mt.hyperlinkId"
-//        		+ " UNION"
-//        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
-//        		+ " 1 as type, c.comment as field, c.id as cid from  Hyperlink h"
-//        		+ " inner join Comment c on h.id = c.hyperlinkId");
-//    	HyperlinkTest();
+    	//HyperlinkTest();
     	//CommentTest();
     	//MetaTagTest();
    }

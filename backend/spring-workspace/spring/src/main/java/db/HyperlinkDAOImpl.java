@@ -178,19 +178,20 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 0 AS type, mt.tag AS field, mt.id AS cid FROM "
 	        		+ " (SELECT h.id, h.link, h.created, h.lastEdited FROM Hyperlink h"
-	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE mt.tag=:tag) h"
+	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE mt.tag LIKE :tag) h"
 	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId"
 	        		+ " UNION"
 	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 1 AS type, c.comment AS field, c.id AS cid FROM"
 	        		+ " (SELECT h.id, h.link, h.created, h.lastEdited FROM Hyperlink h"
-	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE mt.tag=:tag) h"
+	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE mt.tag LIKE :tag) h"
 	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId";
 	        		 
 	        List<Hyperlink> hypList;
 	        
 	        Map<String, Object> params = new HashMap<String, Object>();
-	    	params.put("tag", mtag.getTag());
+	      //matches all patterns with link
+	    	params.put("tag", "%" + mtag.getTag() + "%");
 	        
 	        List<Map<String, Object>> rows = namedParameterJdbcTemplate.queryForList(query, params);
 	        
@@ -202,16 +203,17 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	public List<Hyperlink> getAllWithLink(String link) throws DataAccessException {
 		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 0 AS type, mt.tag AS field, mt.id AS cid  FROM  Hyperlink h"
-	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE h.link=:link"
+	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE h.link LIKE :link"
 	        		+ " UNION"
 	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 1 AS type, c.comment AS field, c.id AS cid FROM  Hyperlink h"
-	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId WHERE h.link=:link";
-
+	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId WHERE h.link LIKE :link";
+		 
 	        List<Hyperlink> hypList;
 	        
 	        Map<String, Object> params = new HashMap<String, Object>();
-	    	params.put("link", link);
+	        //matches all patterns with link
+	    	params.put("link", "%" + link + "%");
 
 	        List<Map<String, Object>> rows = namedParameterJdbcTemplate.queryForList(query, params);
 	        
