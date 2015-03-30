@@ -174,18 +174,22 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	}
 	
 	@Override
-	public List<Hyperlink> getAllWithTag(MetaTag mtag) throws DataAccessException {
-		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
+	public List<Hyperlink> getAllWithTag(MetaTag mtag, String order) throws DataAccessException {
+		String orderByDate = "";
+		if (order.equals("asce")) orderByDate = "ORDER BY h.lastEdited";
+		
+		if (order.equals("desc")) orderByDate = "ORDER BY h.lastEdited DESC";
+		 String query = "SELECT * FROM (SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 0 AS type, mt.tag AS field, mt.id AS cid FROM "
 	        		+ " (SELECT h.id, h.link, h.created, h.lastEdited FROM Hyperlink h"
 	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE mt.tag LIKE :tag) h"
-	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId"
+	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId " + orderByDate + " ) t1"
 	        		+ " UNION"
-	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
+	        		+ " SELECT * FROM (SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 1 AS type, c.comment AS field, c.id AS cid FROM"
 	        		+ " (SELECT h.id, h.link, h.created, h.lastEdited FROM Hyperlink h"
 	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE mt.tag LIKE :tag) h"
-	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId";
+	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId " + orderByDate + " ) t2";
 	        		 
 	        List<Hyperlink> hypList;
 	        
@@ -200,14 +204,20 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	}
 	
 	@Override
-	public List<Hyperlink> getAllWithLink(String link) throws DataAccessException {
-		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
+	public List<Hyperlink> getAllWithLink(String link, String order) throws DataAccessException {
+		String orderByDate = "";
+		if (order.equals("asce")) orderByDate = "ORDER BY h.lastEdited";
+		
+		if (order.equals("desc")) orderByDate = "ORDER BY h.lastEdited DESC";
+		 String query = "SELECT * FROM (SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 0 AS type, mt.tag AS field, mt.id AS cid  FROM  Hyperlink h"
-	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE h.link LIKE :link"
+	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE h.link LIKE :link "
+	        		+ orderByDate + " ) t1"
 	        		+ " UNION"
-	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
+	        		+ " SELECT * FROM (SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 1 AS type, c.comment AS field, c.id AS cid FROM  Hyperlink h"
-	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId WHERE h.link LIKE :link";
+	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId WHERE h.link LIKE :link "
+	        		+ orderByDate + " ) t2";
 		 
 	        List<Hyperlink> hypList;
 	        

@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -29,10 +31,14 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 	
     @Override
 	public void save (MetaTag metaTag) throws DataAccessException {
-		String query = "INSERT INTO MetaTag (tag, hyperlinkid) VALUES (?,?)";
+		String query = "INSERT INTO MetaTag (tag, hyperlinkid)"
+				+ " SELECT * FROM (select ?, ?) AS tmp"
+				+ " WHERE NOT EXISTS ( SELECT tag FROM MetaTag"
+				+ " WHERE tag = ? ) LIMIT 1";
 	
         Object[] args = new Object[] {metaTag.getTag(),
-        							  metaTag.getHyperlinkId()};
+        							  metaTag.getHyperlinkId(),
+        							  metaTag.getTag()};
         
 		int numberOfMetaTags = countMetaTagsByHyperlinkId(metaTag.getHyperlinkId());
 		
@@ -45,7 +51,10 @@ public class MetaTagDAOImpl implements MetaTagDAO{
          
         if(out !=0){
             System.out.println("MetaTag saved with id="+metaTag.getId());
-        }else System.out.println("MetaTag saved failed with id="+metaTag.getId());
+        }
+        else {
+        	throw new DataIntegrityViolationException("Could not insert in db");
+        }
 	}
 	
     @Override

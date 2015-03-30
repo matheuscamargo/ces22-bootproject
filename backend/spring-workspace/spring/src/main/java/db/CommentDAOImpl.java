@@ -35,9 +35,8 @@ public class CommentDAOImpl implements CommentDAO {
         Object[] args = new Object[] {comment.getComment(),
         							  comment.getHyperlinkId()};
         
-        System.out.println("HEHEHEHE");
 		int numberOfMetaTags = countCommentsByHyperlinkId(comment.getHyperlinkId());
-		System.out.println("numberOfMetaTags =" + numberOfMetaTags);
+
 		//security - limit number of metatags per hyperlink
 		if (numberOfMetaTags >= MAX_COMMENTS) {
 			throw new DataBaseIsFullException("Too many comments");
