@@ -1,3 +1,3 @@
 #/bin/bash
 
-python controller/helloworld.py
+python controller/webcontroller.py
