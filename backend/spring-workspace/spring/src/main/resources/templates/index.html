@@ -20,15 +20,14 @@
 			    <div class="col-xs-8">
 					<div class="form-group">
 			    		<label class="controle-label">Search</label>
-	                	<input type="hidden" value="asce" name="order" />
 				        <input class="form-control" type="text" name="q" />
 				    </div>
 				    <div class="form-group">
 				    	<label class="radio-inline">
-				    		<input type="radio" name="name" th:text="Link" onclick="document.search.action='/searchlink'" />
+				    		<input type="radio" th:name="a" th:text="Link" onclick="document.search.action='/searchlink'" th:checked="true"/>
 				    	</label>
 				    	<label class="radio-inline">
-				    		<input type="radio" name="name" th:text="Tag" onclick="document.search.action='/searchtag'" />
+				    		<input type="radio" th:name="a" th:text="Tag" onclick="document.search.action='/searchtag'" />
 				    	</label>
 				    </div>
 				    <div class="form-group">			    
@@ -48,8 +47,14 @@
 	                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/(order='asce')}" th:text="Link" ></a>
 	                	</th>
 	                	<th th:unless="${search} == null" class="col-xs-10">
-	                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/searchlink(order='desc', q=${search})}" th:text="Link" ></a>
-	                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/searchlink(order='asce', q=${search})}" th:text="Link" ></a>
+	                		<div th:if="${searchTag}">
+		                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/searchlink(q=${search}), order='desc'}" th:text="Link" ></a>
+		                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/searchlink(q=${search}), order='asce'}" th:text="Link" ></a>
+		                	</div>
+	                		<div th:unless="${searchTag}">
+		                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/searchlink(q=${search}), order='desc'}" th:text="Link" ></a>
+		                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/searchlink(q=${search}), order='asce'}" th:text="Link" ></a>
+		                	</div>
 	                	</th>
 	                	<th class="col-xs-3"></th>
 	                	<th class="col-xs-3"></th>
@@ -59,7 +64,7 @@
 	              		<tr th:each="hyperlink : ${hyperlinksList}">
 	                		<td>
 	                			<a href="show.html" th:href="@{/show/{id}(id=${hyperlink.id})}" th:text="${hyperlink.link   }"></a>
-	                			<span class="label label-primary" th:each="tag : ${hyperlink.metaTags}" th:text="${tag.tag}"></span>
+	                			<a class="label label-primary" th:each="tag : ${hyperlink.metaTags}" href="searchtag.html" th:href="@{/searchtag(q=${tag.tag})}" th:text="${tag.tag}"></a>
 	                		</td>
 	                		<td><a href="edit.html" th:href="@{/edit/{id}(id=${hyperlink.id})}" th:text="Edit" ></a></td>
 	               			<td><a href="delete.html" th:href="@{/delete/{id}(id=${hyperlink.id})}" th:text="Delete" ></a></td>

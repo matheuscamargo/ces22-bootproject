@@ -26,10 +26,10 @@
 				<p>
 				<ul>
 					<li th:text="'Link: ' + ${hyperlink.link}"></li>
-					<li>Tags: 
+					<li>Tags: 						
 						<ul>
 							<li th:each="tag : ${hyperlink.metaTags}">
-								<span th:text="${tag.tag} "></span>
+								<a class="label label-primary" href="searchtag.html" th:href="@{/searchtag(q=${tag.tag})}" th:text="${tag.tag}"></a>
 								<a href="deletetag.html" th:href="@{/deletetag/{id}(id=${tag.id})}" th:text="Delete" ></a>
 							</li>
 						</ul>

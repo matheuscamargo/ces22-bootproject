@@ -239,7 +239,11 @@ public class HyperlinkWebController{
     public String getAllHyperlinks(@RequestParam(required = false, value="order") String order, Model model) {
     	logger.info("Start index.");
     	model.addAttribute("message", "List of all registered hyperlinks");
-    	if (order == null || order.equals("asce")) {
+    	if (order == null) {
+    		model.addAttribute("hyperlinksList", hyperlinkService.getAll(""));
+    		model.addAttribute("ascending", true);
+    	}
+    	else if (order.equals("asce")) {
     		model.addAttribute("ascending", true);
     		model.addAttribute("hyperlinksList", hyperlinkService.getAll("asce"));
     	}
@@ -250,23 +254,43 @@ public class HyperlinkWebController{
     	return "index";
     }
     @RequestMapping(value = "/searchlink", method = RequestMethod.GET) // OK
-    public String searchHyperlinks(@RequestParam("q") String search, @RequestParam("order") String order, Model model) {
+    public String searchHyperlinks(@RequestParam("q") String search, @RequestParam(required = false, value="order") String order, Model model) {
     	logger.info("Start searchHyperlinks.");
     	model.addAttribute("search", search);
     	model.addAttribute("message", "Search results for \"" + search + "\"");
-    	model.addAttribute("hyperlinksList", hyperlinkService.getAllWithLink(search, order));
-    	if (order.equals("asce")) model.addAttribute("ascending", true);
-    	else if (order.equals("desc")) model.addAttribute("ascending", false);
+    	model.addAttribute("searchTag", false);
+    	if (order == null) {
+    		model.addAttribute("hyperlinksList", hyperlinkService.getAllWithLink(search, ""));
+    		model.addAttribute("ascending", true);
+    	}
+    	else if (order.equals("asce")) {
+    		model.addAttribute("ascending", true);
+    		model.addAttribute("hyperlinksList", hyperlinkService.getAllWithLink(search, "asce"));
+    	}
+    	else {
+    		model.addAttribute("ascending", false);
+    		model.addAttribute("hyperlinksList", hyperlinkService.getAllWithLink(search, "desc"));
+    	}
     	return "index";
     }
     @RequestMapping(value = "/searchtag", method = RequestMethod.GET) // OK
-    public String searchTags(@RequestParam("q") String search, @RequestParam("order") String order, Model model) {
+    public String searchTags(@RequestParam("q") String search, @RequestParam(required = false, value="order") String order, Model model) {
     	logger.info("Start searchTags.");
     	model.addAttribute("search", search);
     	model.addAttribute("message", "Search results for \"" + search + "\"");
-    	model.addAttribute("hyperlinksList", hyperlinkService.getAllWithLink(search, order));
-    	if (order.equals("asce")) model.addAttribute("ascending", true);
-    	else if (order.equals("desc")) model.addAttribute("ascending", false);
+    	model.addAttribute("searchTag", true);
+    	if (order == null) {
+    		model.addAttribute("hyperlinksList", hyperlinkService.getAllWithTag(null, ""));
+    		model.addAttribute("ascending", true);
+    	}
+    	else if (order.equals("asce")) {
+    		model.addAttribute("ascending", true);
+    		model.addAttribute("hyperlinksList", hyperlinkService.getAllWithTag(null, "asce"));
+    	}
+    	else {
+    		model.addAttribute("ascending", false);
+    		model.addAttribute("hyperlinksList", hyperlinkService.getAllWithTag(null, "desc"));
+    	}
     	return "index";
     }
 }
