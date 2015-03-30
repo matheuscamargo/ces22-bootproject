@@ -24,7 +24,7 @@ public interface HyperlinkService {
 	public boolean deleteComment (long id) throws DataAccessException;
 	
 	public Hyperlink getById(long id) throws DataAccessException;
-	public List<Hyperlink> getAllWithTag(MetaTag tag, String order) throws DataAccessException;
+	public List<Hyperlink> getAllWithTag(String tag, String order) throws DataAccessException;
 	public List<Hyperlink> getAllWithLink(String link, String order) throws DataAccessException;
 	public List<Hyperlink> getAll(String order) throws DataAccessException;
 }

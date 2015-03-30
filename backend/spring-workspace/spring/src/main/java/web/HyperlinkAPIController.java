@@ -115,7 +115,7 @@ public class HyperlinkAPIController {
     public List<Hyperlink> getAllWithTag(@RequestBody QueryString q) {
     	logger.info("Start getAllWithTag.");
     	try {
-        	return hyperlinkService.getAllWithTag(new MetaTag(q.getQuery()), "");
+        	return hyperlinkService.getAllWithTag(q.getQuery(), "");
     	}
     	catch (DataAccessException ex) {
     		return null;

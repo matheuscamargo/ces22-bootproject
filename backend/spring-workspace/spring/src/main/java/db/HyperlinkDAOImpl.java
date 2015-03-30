@@ -2,6 +2,8 @@ package db;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import utils.DataBaseIsFullException;
+import utils.HyperlinkComparator;
 
 import java.sql.ResultSet;  
 
@@ -28,7 +31,7 @@ import model.Comment;
 
 //class that deals with database access to Hyperlink table
 public class HyperlinkDAOImpl implements HyperlinkDAO{
-	static final int MAX_HYPERLINKS = 20;
+	static final int MAX_HYPERLINKS = 50;
 	
 	//references to others tables
 	private CommentDAO commentDAO;
@@ -174,50 +177,48 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	}
 	
 	@Override
-	public List<Hyperlink> getAllWithTag(MetaTag mtag, String order) throws DataAccessException {
-		String orderByDate = "";
-		if (order.equals("asce")) orderByDate = "ORDER BY h.lastEdited";
-		
-		if (order.equals("desc")) orderByDate = "ORDER BY h.lastEdited DESC";
-		 String query = "SELECT * FROM (SELECT h.id, h.link, h.created, h.lastEdited,"
+	public List<Hyperlink> getAllWithTag(String mtag, String order) throws DataAccessException {
+		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 0 AS type, mt.tag AS field, mt.id AS cid FROM "
 	        		+ " (SELECT h.id, h.link, h.created, h.lastEdited FROM Hyperlink h"
 	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE mt.tag LIKE :tag) h"
-	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId " + orderByDate + " ) t1"
+	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId "
 	        		+ " UNION"
-	        		+ " SELECT * FROM (SELECT h.id, h.link, h.created, h.lastEdited,"
+	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 1 AS type, c.comment AS field, c.id AS cid FROM"
 	        		+ " (SELECT h.id, h.link, h.created, h.lastEdited FROM Hyperlink h"
 	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE mt.tag LIKE :tag) h"
-	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId " + orderByDate + " ) t2";
+	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId ";
 	        		 
 	        List<Hyperlink> hypList;
 	        
 	        Map<String, Object> params = new HashMap<String, Object>();
 	      //matches all patterns with link
-	    	params.put("tag", "%" + mtag.getTag() + "%");
+	    	params.put("tag", "%" + mtag + "%");
 	        
 	        List<Map<String, Object>> rows = namedParameterJdbcTemplate.queryForList(query, params);
 	        
-	        hypList = extractData(rows);	
-			return hypList;
+	        hypList = extractData(rows);
+	        
+	        //does not need to sort
+	        if (order.equals("")) return hypList;
+	        
+	        Collections.sort(hypList, new HyperlinkComparator());
+	        
+	        if (order.equals("desc")) Collections.reverse(hypList);
+	        
+	        return hypList;
 	}
 	
 	@Override
 	public List<Hyperlink> getAllWithLink(String link, String order) throws DataAccessException {
-		String orderByDate = "";
-		if (order.equals("asce")) orderByDate = "ORDER BY h.lastEdited";
-		
-		if (order.equals("desc")) orderByDate = "ORDER BY h.lastEdited DESC";
-		 String query = "SELECT * FROM (SELECT h.id, h.link, h.created, h.lastEdited,"
+		 String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 0 AS type, mt.tag AS field, mt.id AS cid  FROM  Hyperlink h"
 	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE h.link LIKE :link "
-	        		+ orderByDate + " ) t1"
 	        		+ " UNION"
-	        		+ " SELECT * FROM (SELECT h.id, h.link, h.created, h.lastEdited,"
+	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
 	        		+ " 1 AS type, c.comment AS field, c.id AS cid FROM  Hyperlink h"
-	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId WHERE h.link LIKE :link "
-	        		+ orderByDate + " ) t2";
+	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId WHERE h.link LIKE :link";
 		 
 	        List<Hyperlink> hypList;
 	        
@@ -228,23 +229,26 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	        List<Map<String, Object>> rows = namedParameterJdbcTemplate.queryForList(query, params);
 	        
 	        hypList = extractData(rows);
-			return hypList;
+	        
+	        //does not need to sort
+	        if (order.equals("")) return hypList;
+	        
+	        Collections.sort(hypList, new HyperlinkComparator());
+	        
+	        if (order.equals("desc")) Collections.reverse(hypList);
+	        
+	        return hypList;
 	}
 	
 	@Override
 	public List<Hyperlink> getAll(String order) throws DataAccessException {
-		String orderByDate = "";
-		if (order.equals("asce")) orderByDate = "ORDER BY h.lastEdited";
-		
-		if (order.equals("desc")) orderByDate = "ORDER BY h.lastEdited DESC";
-		
-        String query = "SELECT * FROM (SELECT h.id, h.link, h.created, h.lastEdited,"
+        String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
         		+ " 0 AS type, mt.tag AS field, mt.id AS cid  FROM  Hyperlink h"
-        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId " + orderByDate + " ) t1"
+        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId "
         		+ " UNION"
-        		+ " SELECT * FROM (SELECT h.id, h.link, h.created, h.lastEdited,"
+        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
         		+ " 1 AS type, c.comment as field, c.id as cid FROM  Hyperlink h"
-        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId " + orderByDate + " ) t2";
+        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId ";
         		 
         List<Hyperlink> hypList;
  
@@ -252,8 +256,15 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
         			.queryForList(query, new HashMap<String, Object>());
         
         hypList = extractData(rows);
-         			
-		return hypList;
+        
+        //does not need to sort
+        if (order.equals("")) return hypList;
+        
+        Collections.sort(hypList, new HyperlinkComparator());
+        
+        if (order.equals("desc")) Collections.reverse(hypList);
+        
+        return hypList;
 	}
 	
 	//helper method for extracting data
@@ -276,7 +287,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 			else hyp = hypMap.get(id);
 			
 			//MetaTag row
-			if (rs.get("field") != null && (Integer)rs.get("type") == 0) {
+			if (rs.get("field") != null && (Long)rs.get("type") == 0) {
 				MetaTag mt = new MetaTag((Integer)rs.get("cid"),
 										(String)rs.get("field"),
 										 hyp.getId());
