@@ -14,6 +14,7 @@
 		<p>
 			<a role="button" class="btn btn-default" href="add.html" th:href="@{/add}" th:text="'Add new hyperlink'"></a>
 		</p>
+		<br/>
 		<div class="row">
 			<form class="form-inline" name="search" action="#" th:action="@{/searchlink}" method="get">				
 			    <div class="col-xs-8">
@@ -36,6 +37,7 @@
 				</div>
 		    </form>
 		</div>
+		<br/>
 		<div class="row" th:if="${not #lists.isEmpty(hyperlinksList)}">			
 			<div class="col-md-6">
 	          	<table class="table table-condensed">
@@ -46,7 +48,7 @@
 	                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/(order='asce')}" th:text="Link" ></a>
 	                	</th>
 	                	<th th:unless="${search} == null" class="col-xs-10">
-	                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/searchlink(order='desc'), q=${search}}" th:text="Link" ></a>
+	                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/searchlink(order='desc', q=${search})}" th:text="Link" ></a>
 	                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/searchlink(order='asce', q=${search})}" th:text="Link" ></a>
 	                	</th>
 	                	<th class="col-xs-3"></th>

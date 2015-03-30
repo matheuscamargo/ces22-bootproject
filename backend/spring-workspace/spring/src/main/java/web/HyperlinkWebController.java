@@ -239,9 +239,14 @@ public class HyperlinkWebController{
     public String getAllHyperlinks(@RequestParam(required = false, value="order") String order, Model model) {
     	logger.info("Start index.");
     	model.addAttribute("message", "List of all registered hyperlinks");
-    	model.addAttribute("hyperlinksList", hyperlinkService.getAll(""));
-    	if (order != null && order.equals("asce")) model.addAttribute("ascending", true);
-    	else model.addAttribute("ascending", false);
+    	if (order == null || order.equals("asce")) {
+    		model.addAttribute("ascending", true);
+    		model.addAttribute("hyperlinksList", hyperlinkService.getAll("asce"));
+    	}
+    	else {
+    		model.addAttribute("ascending", false);
+    		model.addAttribute("hyperlinksList", hyperlinkService.getAll("desc"));
+    	}
     	return "index";
     }
     @RequestMapping(value = "/searchlink", method = RequestMethod.GET) // OK
@@ -249,7 +254,7 @@ public class HyperlinkWebController{
     	logger.info("Start searchHyperlinks.");
     	model.addAttribute("search", search);
     	model.addAttribute("message", "Search results for \"" + search + "\"");
-    	model.addAttribute("hyperlinksList", hyperlinkService.getAllWithLink(search));
+    	model.addAttribute("hyperlinksList", hyperlinkService.getAllWithLink(search, order));
     	if (order.equals("asce")) model.addAttribute("ascending", true);
     	else if (order.equals("desc")) model.addAttribute("ascending", false);
     	return "index";
@@ -259,7 +264,7 @@ public class HyperlinkWebController{
     	logger.info("Start searchTags.");
     	model.addAttribute("search", search);
     	model.addAttribute("message", "Search results for \"" + search + "\"");
-    	model.addAttribute("hyperlinksList", hyperlinkService.getAllWithLink(search));
+    	model.addAttribute("hyperlinksList", hyperlinkService.getAllWithLink(search, order));
     	if (order.equals("asce")) model.addAttribute("ascending", true);
     	else if (order.equals("desc")) model.addAttribute("ascending", false);
     	return "index";
