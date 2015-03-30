@@ -1,6 +1,7 @@
 package model;
 
-public class BaseEntity {
+//base class for all database models
+public abstract class BaseEntity {
 	protected long id;
 
 	public long getId () {

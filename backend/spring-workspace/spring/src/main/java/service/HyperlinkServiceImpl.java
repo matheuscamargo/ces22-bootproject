@@ -85,13 +85,13 @@ public class HyperlinkServiceImpl implements HyperlinkService {
 	}
 	
 	@Override
-	public List<Hyperlink> getAllWithTag(MetaTag tag) throws DataAccessException {
-		return hyperlinkDAO.getAllWithTag(tag);
+	public List<Hyperlink> getAllWithTag(MetaTag tag, String order) throws DataAccessException {
+		return hyperlinkDAO.getAllWithTag(tag, order);
 	}
 	
 	@Override
-	public List<Hyperlink> getAllWithLink(String link) throws DataAccessException {
-		return hyperlinkDAO.getAllWithLink(link);
+	public List<Hyperlink> getAllWithLink(String link, String order) throws DataAccessException {
+		return hyperlinkDAO.getAllWithLink(link, order);
 	}
 	
 	@Override
