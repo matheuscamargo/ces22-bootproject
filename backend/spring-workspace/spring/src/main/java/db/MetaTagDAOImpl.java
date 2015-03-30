@@ -34,21 +34,23 @@ public class MetaTagDAOImpl implements MetaTagDAO{
 		String query = "INSERT INTO MetaTag (tag, hyperlinkid)"
 				+ " SELECT * FROM (select ?, ?) AS tmp"
 				+ " WHERE NOT EXISTS ( SELECT tag FROM MetaTag"
-				+ " WHERE tag = ? ) LIMIT 1";
+				+ " WHERE hyperlinkId = ? AND tag = ?) LIMIT 1";
 	
         Object[] args = new Object[] {metaTag.getTag(),
         							  metaTag.getHyperlinkId(),
+        							  metaTag.getHyperlinkId(),
         							  metaTag.getTag()};
         
+        
 		int numberOfMetaTags = countMetaTagsByHyperlinkId(metaTag.getHyperlinkId());
-		
+
 		//security - limit number of metatags per hyperlink
 		if (numberOfMetaTags >= MAX_METATAGS) {
 			throw new DataBaseIsFullException("Too many metatags");
 		}
-         
+
         int out = jdbcTemplate.update(query, args);
-         
+
         if(out !=0){
             System.out.println("MetaTag saved with id="+metaTag.getId());
         }
