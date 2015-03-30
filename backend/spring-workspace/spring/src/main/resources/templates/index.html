@@ -9,20 +9,48 @@
 <body role="document">
 	<div class="container" role="main">
 		<div class="page-header">
-			<h1>List of registered hyperlinks</h1>
+			<h1 th:text="${message}"></h1>
 		</div>
 		<p>
 			<a role="button" class="btn btn-default" href="add.html" th:href="@{/add}" th:text="'Add new hyperlink'"></a>
 		</p>
 		<div class="row">
-			<span th:if="${#lists.isEmpty(hyperlinksList)}" th:text="'Hyperlink list is empty'"></span>
+			<form class="form-inline" name="search" action="#" th:action="@{/searchlink}" method="get">				
+			    <div class="col-xs-8">
+					<div class="form-group">
+			    		<label class="controle-label">Search</label>
+	                	<input type="hidden" value="asce" name="order" />
+				        <input class="form-control" type="text" name="q" />
+				    </div>
+				    <div class="form-group">
+				    	<label class="radio-inline">
+				    		<input type="radio" name="name" th:text="Link" onclick="document.search.action='/searchlink'" />
+				    	</label>
+				    	<label class="radio-inline">
+				    		<input type="radio" name="name" th:text="Tag" onclick="document.search.action='/searchtag'" />
+				    	</label>
+				    </div>
+				    <div class="form-group">			    
+					    <input role="button" class="btn btn-default" type="submit" value="Submit" />
+					</div>
+				</div>
+		    </form>
+		</div>
+		<div class="row" th:if="${not #lists.isEmpty(hyperlinksList)}">			
 			<div class="col-md-6">
-	          	<table class="table table-condensed" th:if="${not #lists.isEmpty(hyperlinksList)}">
+	          	<table class="table table-condensed">
 	            	<thead>
 	              	<tr>
-	                	<th class="col-sm-10">Link</th>
-	                	<th class="col-sm-3"></th>
-	                	<th class="col-sm-3"></th>
+	                	<th th:if="${search} == null" class="col-xs-10">
+	                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/(order='desc')}" th:text="Link" ></a>
+	                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/(order='asce')}" th:text="Link" ></a>
+	                	</th>
+	                	<th th:unless="${search} == null" class="col-xs-10">
+	                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/searchlink(order='desc'), q=${search}}" th:text="Link" ></a>
+	                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/searchlink(order='asce', q=${search})}" th:text="Link" ></a>
+	                	</th>
+	                	<th class="col-xs-3"></th>
+	                	<th class="col-xs-3"></th>
 	              	</tr>
 	            	</thead>
 	         		<tbody>
@@ -38,6 +66,8 @@
 	          	</table>
         	</div>
 		</div>
+		<br/>
+		<p th:if="${#lists.isEmpty(hyperlinksList)}" th:text="'Hyperlink list is empty'"></p>
 	</div>
 </body>
 </html>

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import service.HyperlinkService;
 import utils.DataBaseIsFullException;
@@ -235,10 +236,32 @@ public class HyperlinkWebController{
     	return "delete";
     }   
     @RequestMapping(value = "/", method = RequestMethod.GET) // OK
-    public String getAllHyperlinks(Model model) {
+    public String getAllHyperlinks(@RequestParam(required = false, value="order") String order, Model model) {
     	logger.info("Start index.");
-    	logger.info("List size: " + hyperlinkService.getAll("").size()); 
+    	model.addAttribute("message", "List of all registered hyperlinks");
     	model.addAttribute("hyperlinksList", hyperlinkService.getAll(""));
+    	if (order != null && order.equals("asce")) model.addAttribute("ascending", true);
+    	else model.addAttribute("ascending", false);
+    	return "index";
+    }
+    @RequestMapping(value = "/searchlink", method = RequestMethod.GET) // OK
+    public String searchHyperlinks(@RequestParam("q") String search, @RequestParam("order") String order, Model model) {
+    	logger.info("Start searchHyperlinks.");
+    	model.addAttribute("search", search);
+    	model.addAttribute("message", "Search results for \"" + search + "\"");
+    	model.addAttribute("hyperlinksList", hyperlinkService.getAllWithLink(search));
+    	if (order.equals("asce")) model.addAttribute("ascending", true);
+    	else if (order.equals("desc")) model.addAttribute("ascending", false);
+    	return "index";
+    }
+    @RequestMapping(value = "/searchtag", method = RequestMethod.GET) // OK
+    public String searchTags(@RequestParam("q") String search, @RequestParam("order") String order, Model model) {
+    	logger.info("Start searchTags.");
+    	model.addAttribute("search", search);
+    	model.addAttribute("message", "Search results for \"" + search + "\"");
+    	model.addAttribute("hyperlinksList", hyperlinkService.getAllWithLink(search));
+    	if (order.equals("asce")) model.addAttribute("ascending", true);
+    	else if (order.equals("desc")) model.addAttribute("ascending", false);
     	return "index";
     }
 }
