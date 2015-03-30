@@ -11,7 +11,8 @@
 		<div class="page-header">
 			<h1>Adding new hyperlinks</h1>
 		</div>
-		<div th:unless="${error}" class="row">
+		<div th:if="${error}" class="alert alert-danger" role="alert" th:text="${message}"></div>
+		<div class="row">
 			<form role="form" action="#" th:action="@{/add}" th:object="${hyperlink}" method="post">				
 			    <div class="col-xs-8">
 					<div class="form-group">

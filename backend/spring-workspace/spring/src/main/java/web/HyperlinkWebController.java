@@ -45,18 +45,24 @@ public class HyperlinkWebController{
     public String addHyperlinkSubmit(@ModelAttribute Hyperlink hyperlink, Model model) {
     	logger.info("Start addHyperlink POST.");
     	try {
+    		if (hyperlink.getLink().length() < 3) {
+        		model.addAttribute("error", 1);
+        		model.addAttribute("message", "Error adding: link should have 3 or more characters!");
+        		return "add";
+    		}
     		long id = hyperlinkService.save(hyperlink);
     		model.addAttribute("hyperlink", hyperlinkService.getById(id));
     		model.addAttribute("exists", true);
         	return "redirect:/show/" + id;
     	}
     	catch (DataBaseIsFullException ex) {
-    		//faz o que vc quiser
-    		model.addAttribute("error", 1);
+    		model.addAttribute("error", 2);
+    		model.addAttribute("message", "Error adding: database is full!");
     		return "add";
     	}
     	catch (DataAccessException ex) {
-    		model.addAttribute("error", 1);
+    		model.addAttribute("error", 2);
+    		model.addAttribute("message", "Error adding: link too huge!");
     		return "add";
     	}
     }    
@@ -73,29 +79,40 @@ public class HyperlinkWebController{
     	}
     	catch (EmptyResultDataAccessException ex) {
     		model.addAttribute("error", 1);
+    		model.addAttribute("message", "No hyperlink entry with id " + id);
     	}
     	return "addtag";
     }    
     @RequestMapping(value = "/addtag", method = RequestMethod.POST) // OK
     public String addTagSubmit(@ModelAttribute MetaTag tag, Model model) {
     	logger.info("Start addTag POST.");
-    	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
     	try {
-    		logger.info("Starting debug");
+    		if (tag.getTag().length() < 3) {
+        		model.addAttribute("error", 2);
+        		model.addAttribute("message", "Error adding: tag should have 3 or more characters!");
+        		long id = tag.getHyperlinkId();
+            	Hyperlink hyperlink = hyperlinkService.getById(id);
+        		model.addAttribute("tag", tag);
+        		model.addAttribute("hyperlink", hyperlink);
+        		return "addtag";
+    		}
     		hyperlinkService.addMetaTag(tag);
     		model.addAttribute("hyperlink", hyperlinkService.getById(tag.getHyperlinkId()));
     		model.addAttribute("error", 0);
     		return "redirect:/show/" + tag.getHyperlinkId();
     	}
-    	
     	catch (DataBaseIsFullException ex) {
-    		//faz o que vc quiser
       		model.addAttribute("error", 2);
+    		model.addAttribute("message", "Error adding: Database is full!");
     		return "addtag";
-    	}
-    	
+    	}    	
     	catch (DataAccessException ex) {
     		model.addAttribute("error", 2);
+    		model.addAttribute("message", "Error adding: tag too huge!");
+    		long id = tag.getHyperlinkId();
+        	Hyperlink hyperlink = hyperlinkService.getById(id);
+    		model.addAttribute("tag", tag);
+    		model.addAttribute("hyperlink", hyperlink);
     		return "addtag";
     	}
     }    
@@ -112,21 +129,40 @@ public class HyperlinkWebController{
     	}
     	catch (EmptyResultDataAccessException ex) {
     		model.addAttribute("error", 1);
+    		model.addAttribute("message", "No hyperlink entry with id " + id);
     	}
     	return "addcomment";
     }    
     @RequestMapping(value = "/addcomment", method = RequestMethod.POST) // OK
     public String addCommentSubmit(@ModelAttribute Comment comment, Model model) {
     	logger.info("Start addCommand POST.");
-    	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
     	try {
+    		if (comment.getComment().length() < 3) {
+        		model.addAttribute("error", 2);
+        		model.addAttribute("message", "Error adding: comment should have 3 or more characters!");
+        		long id = comment.getHyperlinkId();
+        		Hyperlink hyperlink = hyperlinkService.getById(id);
+        		model.addAttribute("comment", comment);
+        		model.addAttribute("hyperlink", hyperlink);        		
+        		return "addcomment";
+    		}
     		hyperlinkService.addComment(comment);
     		model.addAttribute("hyperlink", hyperlinkService.getById(comment.getHyperlinkId()));
     		model.addAttribute("error", 0);
     		return "redirect:/show/" + comment.getHyperlinkId();
     	}
+    	catch (DataBaseIsFullException ex) {
+      		model.addAttribute("error", 2);
+    		model.addAttribute("message", "Error adding: Database is full!");
+    		return "addcomment";
+    	} 
     	catch (DataAccessException ex) {
     		model.addAttribute("error", 2);
+    		model.addAttribute("message", "Error adding: comment too huge!");
+    		long id = comment.getHyperlinkId();
+    		Hyperlink hyperlink = hyperlinkService.getById(id);
+    		model.addAttribute("comment", comment);
+    		model.addAttribute("hyperlink", hyperlink);        		
     		return "addcomment";
     	}
     }    
@@ -140,6 +176,7 @@ public class HyperlinkWebController{
     	}
     	catch (EmptyResultDataAccessException ex) {
     		model.addAttribute("error", 1);
+    		model.addAttribute("message", "No hyperlink entry with id " + id);
     	}
     	return "edit";
     }    
@@ -147,6 +184,11 @@ public class HyperlinkWebController{
     public String editHyperlinkSubmit(@ModelAttribute Hyperlink hyperlink, Model model) {
     	logger.info("Start edit POST.");
     	try {
+    		if (hyperlink.getLink().length() < 3) {
+        		model.addAttribute("error", 2);
+        		model.addAttribute("message", "Error adding: link should have 3 or more characters!");
+        		return "edit";
+    		}
     		hyperlinkService.update(hyperlink);
     		model.addAttribute("hyperlink", hyperlink);
     		model.addAttribute("exists", true);
@@ -154,6 +196,7 @@ public class HyperlinkWebController{
     	}
     	catch (DataAccessException ex) {
     		model.addAttribute("error", 2);
+    		model.addAttribute("message", "Error editing: link too huge!");
     		return "edit";
     	}
     }    
@@ -169,14 +212,23 @@ public class HyperlinkWebController{
     	}
     	catch (EmptyResultDataAccessException ex) {
     		model.addAttribute("error", 1);
+    		model.addAttribute("message", "No comment entry with id " + id);
     	}
     	return "editcomment";
     }    
     @RequestMapping(value = "/editcomment", method = RequestMethod.POST) // TEST IT!
     public String editCommentSubmit(@ModelAttribute Comment comment, Model model) {
     	logger.info("Start editCommand POST.");
-    	// CHECK DATABASE SIZE TO KEEP IT LIMITED AND AVOID ATTACKS
     	try {
+    		if (comment.getComment().length() < 3) {
+        		model.addAttribute("error", 2);
+        		model.addAttribute("message", "Error editing: comment should have 3 or more characters!");
+        		long id = comment.getHyperlinkId();
+            	Hyperlink hyperlink = hyperlinkService.getById(id);
+        		model.addAttribute("comment", comment);
+        		model.addAttribute("hyperlink", hyperlink);
+        		return "editcomment";
+    		}
     		hyperlinkService.editComment(comment);
     		model.addAttribute("hyperlink", hyperlinkService.getById(comment.getHyperlinkId()));
     		model.addAttribute("error", 0);
@@ -184,6 +236,11 @@ public class HyperlinkWebController{
     	}
     	catch (DataAccessException ex) {
     		model.addAttribute("error", 2);
+    		model.addAttribute("message", "Error adding: comment too huge!");
+    		long id = comment.getHyperlinkId();
+        	Hyperlink hyperlink = hyperlinkService.getById(id);
+    		model.addAttribute("comment", comment);
+    		model.addAttribute("hyperlink", hyperlink);
     		return "editcomment";
     	}
     }    
@@ -215,25 +272,35 @@ public class HyperlinkWebController{
     public String deleteTag(@PathVariable("id") long id, Model model) {
     	logger.info("Start deleteComment.");
     	try {
+    		long hyperlinkId = hyperlinkService.getMetaTagById(id).getHyperlinkId();
+    		Hyperlink hyperlink = hyperlinkService.getById(hyperlinkId);
+    		model.addAttribute("hyperlink", hyperlink);
     		hyperlinkService.deleteMetaTag(id);
+    		model.addAttribute("exists", true);
     		model.addAttribute("message", "Tag with id " + id + " succesfully deleted!");
+    		return "redirect:/show/" + hyperlinkId;
     	}
     	catch (DataAccessException ex) {
     		model.addAttribute("message", "Tag with id " + id + " not found!");
+        	return "delete";
     	}
-    	return "delete";
     }   
     @RequestMapping(value = "/deletecomment/{id}", method = RequestMethod.GET) // TEST IT!
     public String deleteComment(@PathVariable("id") long id, Model model) {
     	logger.info("Start deleteComment.");
     	try {
-    		hyperlinkService.deleteMetaTag(id);
+    		long hyperlinkId = hyperlinkService.getCommentById(id).getHyperlinkId();
+    		Hyperlink hyperlink = hyperlinkService.getById(hyperlinkId);
+    		model.addAttribute("hyperlink", hyperlink);
+    		hyperlinkService.deleteComment(id);
+    		model.addAttribute("exists", true);
     		model.addAttribute("message", "Comment with id " + id + " succesfully deleted!");
+    		return "redirect:/show/" + hyperlinkId;
     	}
     	catch (DataAccessException ex) {
     		model.addAttribute("message", "Comment with id " + id + " not found!");
+        	return "delete";
     	}
-    	return "delete";
     }   
     @RequestMapping(value = "/", method = RequestMethod.GET) // OK
     public String getAllHyperlinks(@RequestParam(required = false, value="order") String order, Model model) {
@@ -280,16 +347,16 @@ public class HyperlinkWebController{
     	model.addAttribute("message", "Search results for \"" + search + "\"");
     	model.addAttribute("searchTag", true);
     	if (order == null) {
-    		model.addAttribute("hyperlinksList", hyperlinkService.getAllWithTag(null, ""));
+    		model.addAttribute("hyperlinksList", hyperlinkService.getAllWithTag(search, ""));
     		model.addAttribute("ascending", true);
     	}
     	else if (order.equals("asce")) {
     		model.addAttribute("ascending", true);
-    		model.addAttribute("hyperlinksList", hyperlinkService.getAllWithTag(null, "asce"));
+    		model.addAttribute("hyperlinksList", hyperlinkService.getAllWithTag(search, "asce"));
     	}
     	else {
     		model.addAttribute("ascending", false);
-    		model.addAttribute("hyperlinksList", hyperlinkService.getAllWithTag(null, "desc"));
+    		model.addAttribute("hyperlinksList", hyperlinkService.getAllWithTag(search, "desc"));
     	}
     	return "index";
     }

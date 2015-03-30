@@ -9,10 +9,11 @@
 <body role="document">
 	<div class="container" role="main">
 		<div class="page-header">
-			<h1 th:if="${error}" th:text="'No entry with id ' + ${id}"></h1>
-			<h1 th:unless="${error}" th:text="'Adding new tag for ' + ${hyperlink.link}"></h1>
-		</div>
-		<div th:unless="${error}" class="row">
+			<h1 th:if="${error} == 1" th:text="${message}"></h1>
+			<h1 th:if="${error} != 1" th:text="'Adding new tag for ' + ${hyperlink.link}"></h1>
+		</div>		
+		<div th:if="${error} == 2" class="alert alert-danger" role="alert" th:text="${message}"></div>
+		<div th:if="${error} != 1" class="row">
 			<form role="form" action="#" th:action="@{/addtag}" th:object="${tag}" method="post">				
 			    <div class="col-xs-8">
 					<div class="form-group">

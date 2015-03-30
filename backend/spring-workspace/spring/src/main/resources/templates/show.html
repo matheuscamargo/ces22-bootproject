@@ -22,10 +22,12 @@
 				<a role="button" class="btn btn-default" href="addtag.html" th:href="@{/addtag/{id}(id=${hyperlink.id})}" th:text="'Add tag'" ></a>
 				<a role="button" class="btn btn-default" href="addcomment.html" th:href="@{/addcomment/{id}(id=${hyperlink.id})}" th:text="'Add comment'" ></a>
 			</p>
-			<div class="row">
-				<p>
+			<div class="row">				
+				<div th:if="${message} != null" class="alert alert-danger" role="alert" th:text="${message}"></div>
+				<h2>
+				<p><span th:text="'Link: ' + ${hyperlink.link}"></span></p></h2>				
+				<p>				
 				<ul>
-					<li th:text="'Link: ' + ${hyperlink.link}"></li>
 					<li>Tags: 						
 						<ul>
 							<li th:each="tag : ${hyperlink.metaTags}">
