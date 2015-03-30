@@ -3,19 +3,33 @@
 <head>
     <title>Hyperlink database - Server view</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" media="all" rel="stylesheet" href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+    <link type="text/css" media="all" rel="stylesheet" href="../css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}" />
 </head>
-<body>
-	<h1 th:if="${error}" th:text="'No entry with id ' + ${id}"></h1>
-	<div th:unless="${error}">
-		<h1 th:text="'Adding new comment for ' + ${hyperlink.link}"></h1>
-		<form action="#" th:action="@{/addcomment}" th:object="${comment}" method="post">	
-	    	<input type="hidden" th:field="*{id}"/>
-	    	<input type="hidden" th:field="*{hyperlinkId}"/>
-	    	<p>Comment name: <input type="text" th:field="*{comment}" /></p>
-	        <p><input type="submit" value="Submit" /></p>
-	    </form>
+<body role="document">
+	<div class="container" role="main">
+		<div class="page-header">
+			<h1 th:if="${error}" th:text="'No entry with id ' + ${id}"></h1>
+			<h1 th:unless="${error}" th:text="'Adding new comment for ' + ${hyperlink.link}"></h1>
+		</div>
+		<div th:unless="${error}" class="row">
+			<form role="form" action="#" th:action="@{/addcomment}" th:object="${comment}" method="post">				
+			    <div class="col-xs-8">
+					<div class="form-group">
+				    	<input type="hidden" th:field="*{id}" />
+	    				<input type="hidden" th:field="*{hyperlinkId}"/>
+			    		<label class="controle-label">Comment</label>
+				        <input class="form-control" type="text" th:field="*{comment}" />
+				    </div>    
+				    <div class="form-group">			    
+					    <input role="button" class="btn btn-default" type="submit" value="Submit" />
+					</div>
+				</div>
+		    </form>
+		</div>
+	    <div class="row">
+			<a role="button" class="btn btn-link" href="index.html" th:href="@{/}" th:text="'Main page'" ></a>
+		</div>
 	</div>
-	<br/>
-	<a href="index.html" th:href="@{/}" th:text="'Main page'" ></a>
 </body>
 </html>

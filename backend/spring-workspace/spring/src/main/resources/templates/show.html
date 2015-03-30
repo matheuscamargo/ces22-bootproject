@@ -3,39 +3,55 @@
 <head>
     <title>Hyperlink database - Server view</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" media="all" rel="stylesheet" href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+    <link type="text/css" media="all" rel="stylesheet" href="../css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}" />
 </head>
-<body>
-	<h1 th:if="${not exists}" th:text="'Entry with id ' + ${id} + ' not found!'"></h1> 
-	<div th:if="${exists}">
-		<h1 th:text="'Showing content of entry with id ' + ${hyperlink.id}"></h1>	
-		<br/>		
-		<a href="addtag.html" th:href="@{/addtag/{id}(id=${hyperlink.id})}" th:text="'Add tag'" ></a>
-		<br/>		
-		<a href="addcomment.html" th:href="@{/addcomment/{id}(id=${hyperlink.id})}" th:text="'Add comment'" ></a>
-		<ul>
-			<li th:text="'id: ' + ${hyperlink.id}"></li>
-			<li th:text="'Link: ' + ${hyperlink.link}"></li>
-			<li>Tags: 
-				<ul>
-					<li th:each="tag : ${hyperlink.metaTags}">
-						<span th:text="${tag.tag} "></span>
-						<a href="deletetag.html" th:href="@{/deletetag/{id}(id=${tag.id})}" th:text="Delete" ></a>
-					</li>
-				</ul>
-			</li>
-			<li>Comments: 
-				<ul>
-					<li th:each="comment : ${hyperlink.comments}">
-						<span th:text="${comment.comment}"></span>
-						<a href="editcomment.html" th:href="@{/editcomment/{id}(id=${comment.id})}" th:text="Edit " ></a>
-						<a href="deletecomment.html" th:href="@{/deletecomment/{id}(id=${comment.id})}" th:text="Delete" ></a>
-					</li>
-				</ul>
-			</li>
-			<li th:text="'Added at: ' + ${hyperlink.addedAt}"></li>
-			<li th:text="'Last edited at: ' + ${hyperlink.lastEditedAt}"></li>
-		</ul>
+<body role="document">
+	<div class="container theme-showcase" role="main">
+		<div th:if="${not exists}">
+			<div class="page-header">
+				<h1 th:text="'Entry with id ' + ${id} + ' not found!'"></h1> 
+			</div>
 		</div>
-	<a href="index.html" th:href="@{/}" th:text="'Main page'" ></a>
+		<div th:if="${exists}">
+			<div class="page-header">
+				<h1 th:text="'Showing content'"></h1>	
+			</div>
+				<p>
+					<a role="button" class="btn btn-default" href="edit.html" th:href="@{/edit/{id}(id=${hyperlink.id})}" th:text="Edit" ></a>
+					<a role="button" class="btn btn-default" href="addtag.html" th:href="@{/addtag/{id}(id=${hyperlink.id})}" th:text="'Add tag'" ></a>
+					<a role="button" class="btn btn-default" href="addcomment.html" th:href="@{/addcomment/{id}(id=${hyperlink.id})}" th:text="'Add comment'" ></a>
+				</p>
+			<div class="row">
+				<p>
+				<ul>
+					<li th:text="'Link: ' + ${hyperlink.link}"></li>
+					<li>Tags: 
+						<ul>
+							<li th:each="tag : ${hyperlink.metaTags}">
+								<span th:text="${tag.tag} "></span>
+								<a href="deletetag.html" th:href="@{/deletetag/{id}(id=${tag.id})}" th:text="Delete" ></a>
+							</li>
+						</ul>
+					</li>
+					<li>Comments: 
+						<ul>
+							<li th:each="comment : ${hyperlink.comments}">
+								<span th:text="${comment.comment}"></span>
+								<a href="editcomment.html" th:href="@{/editcomment/{id}(id=${comment.id})}" th:text="Edit " ></a>
+								<a href="deletecomment.html" th:href="@{/deletecomment/{id}(id=${comment.id})}" th:text="Delete" ></a>
+							</li>
+						</ul>
+					</li>
+					<li th:text="'Added at: ' + ${hyperlink.addedAt}"></li>
+					<li th:text="'Last edited at: ' + ${hyperlink.lastEditedAt}"></li>
+				</ul>
+				</p>			
+			</div>
+		</div>
+		<div class="row">
+			<a role="button" class="btn btn-link" href="index.html" th:href="@{/}" th:text="'Main page'" ></a>
+		</div>
+	</div>
 </body>
 </html>

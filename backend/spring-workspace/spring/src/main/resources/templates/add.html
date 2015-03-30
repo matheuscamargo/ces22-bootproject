@@ -3,17 +3,33 @@
 <head>
     <title>Hyperlink database - Server view</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" media="all" rel="stylesheet" href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+    <link type="text/css" media="all" rel="stylesheet" href="../css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}" />
 </head>
-<body>
-	<h1>Adding new hyperlink</h1>
-	<p th:if="${error}" th:text="'Error true'"></p>
-	<p th:unless="${error}" th:text="'Error false'"></p>
-	<form th:unless="${error}" action="#" th:action="@{/add}" th:object="${hyperlink}" method="post">
-    	<p>Id: <input type="number" th:field="*{id}" /></p>
-        <p>Link: <input type="text" th:field="*{link}" /></p>
-        <p><input type="submit" value="Submit" /></p>
-    </form>
-	<br/>
-	<a href="index.html" th:href="@{/}" th:text="'Main page'" ></a>
+<body role="document">
+	<div class="container" role="main">
+		<div class="page-header">
+			<h1>Adding new hyperlinks</h1>
+		</div>
+		<p th:if="${error}" th:text="'Error true'"></p>
+		<p th:unless="${error}" th:text="'Error false'"></p>
+		<div th:unless="${error}" class="row">
+			<form role="form" action="#" th:action="@{/add}" th:object="${hyperlink}" method="post">				
+			    <div class="col-xs-8">
+					<div class="form-group">
+				    	<input type="hidden" th:field="*{id}" />
+			    		<label class="controle-label">Link</label>
+				        <input class="form-control" type="text" th:field="*{link}" />
+				    </div>    
+				    <div class="form-group">			    
+					    <input role="button" class="btn btn-default" type="submit" value="Submit" />
+					</div>
+				</div>
+		    </form>
+		</div>
+	    <div class="row">
+			<a role="button" class="btn btn-link" href="index.html" th:href="@{/}" th:text="'Main page'" ></a>
+		</div>
+	</div>
 </body>
 </html>
