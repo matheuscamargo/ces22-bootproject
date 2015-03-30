@@ -95,7 +95,7 @@ public class HyperlinkServiceImpl implements HyperlinkService {
 	}
 	
 	@Override
-	public List<Hyperlink> getAll() throws DataAccessException {
-		return hyperlinkDAO.getAll();
+	public List<Hyperlink> getAll(String order) throws DataAccessException {
+		return hyperlinkDAO.getAll(order);
 	}
 }

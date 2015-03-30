@@ -16,8 +16,8 @@ public interface HyperlinkDAO {
 	
 	public long countHyperlinks() throws DataAccessException;
 	
-	public Hyperlink getById(long id) throws DataAccessException;
+	public Hyperlink getById(long idz) throws DataAccessException;
 	public List<Hyperlink> getAllWithTag(MetaTag tag) throws DataAccessException;
 	public List<Hyperlink> getAllWithLink(String link) throws DataAccessException;
-	public List<Hyperlink> getAll() throws DataAccessException;
+	public List<Hyperlink> getAll(String order) throws DataAccessException;
 }

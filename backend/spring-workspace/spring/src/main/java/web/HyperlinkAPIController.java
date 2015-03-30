@@ -99,7 +99,7 @@ public class HyperlinkAPIController {
     @RequestMapping(value = "/api", method = RequestMethod.GET) // OK
     public List<Hyperlink> getAllHyperlinks() {
     	logger.info("Start getAllHyperliks.");
-    	return hyperlinkService.getAll();
+    	return hyperlinkService.getAll("");
     }
     @RequestMapping(value = "/api/show/{id}", method = RequestMethod.GET) // OK
     public Hyperlink show(@PathVariable("id") long id) {

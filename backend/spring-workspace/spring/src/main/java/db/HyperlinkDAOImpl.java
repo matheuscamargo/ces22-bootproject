@@ -222,14 +222,19 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 	}
 	
 	@Override
-	public List<Hyperlink> getAll() throws DataAccessException {
-        String query = "SELECT h.id, h.link, h.created, h.lastEdited,"
+	public List<Hyperlink> getAll(String order) throws DataAccessException {
+		String orderByDate = "";
+		if (order.equals("asce")) orderByDate = "ORDER BY h.lastEdited";
+		
+		if (order.equals("desc")) orderByDate = "ORDER BY h.lastEdited DESC";
+		
+        String query = "SELECT * FROM (SELECT h.id, h.link, h.created, h.lastEdited,"
         		+ " 0 AS type, mt.tag AS field, mt.id AS cid  FROM  Hyperlink h"
-        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId"
+        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId " + orderByDate + " ) t1"
         		+ " UNION"
-        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
+        		+ " SELECT * FROM (SELECT h.id, h.link, h.created, h.lastEdited,"
         		+ " 1 AS type, c.comment as field, c.id as cid FROM  Hyperlink h"
-        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId";
+        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId " + orderByDate + " ) t2";
         		 
         List<Hyperlink> hypList;
  
@@ -261,7 +266,7 @@ public class HyperlinkDAOImpl implements HyperlinkDAO{
 			else hyp = hypMap.get(id);
 			
 			//MetaTag row
-			if (rs.get("field") != null && ((Long)rs.get("type")).intValue() == 0) {
+			if (rs.get("field") != null && (Integer)rs.get("type") == 0) {
 				MetaTag mt = new MetaTag((Integer)rs.get("cid"),
 										(String)rs.get("field"),
 										 hyp.getId());

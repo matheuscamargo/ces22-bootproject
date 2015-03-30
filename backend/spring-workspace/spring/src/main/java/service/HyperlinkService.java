@@ -26,5 +26,5 @@ public interface HyperlinkService {
 	public Hyperlink getById(long id) throws DataAccessException;
 	public List<Hyperlink> getAllWithTag(MetaTag tag) throws DataAccessException;
 	public List<Hyperlink> getAllWithLink(String link) throws DataAccessException;
-	public List<Hyperlink> getAll() throws DataAccessException;
+	public List<Hyperlink> getAll(String order) throws DataAccessException;
 }

@@ -29,13 +29,6 @@ public class Application implements CommandLineRunner {
 	//entry point for the web application
     public static void main(String args[]) {
         SpringApplication.run(Application.class, args);
-        System.out.println("SELECT h.id, h.link, h.created, h.lastEdited,"
-	        		+ " 0 AS type, mt.tag AS field, mt.id AS cid  FROM  Hyperlink h"
-	        		+ " LEFT JOIN MetaTag mt ON h.id = mt.hyperlinkId WHERE h.link LIKE '%google%'"
-	        		+ " UNION"
-	        		+ " SELECT h.id, h.link, h.created, h.lastEdited,"
-	        		+ " 1 AS type, c.comment AS field, c.id AS cid FROM  Hyperlink h"
-	        		+ " LEFT JOIN Comment c ON h.id = c.hyperlinkId WHERE h.link LIKE '%google'");
     }
 
     @Override
@@ -147,7 +140,7 @@ public class Application implements CommandLineRunner {
          
         
         //Get All
-        List<Hyperlink> hypList = HyperlinkDAO.getAll();
+        List<Hyperlink> hypList = HyperlinkDAO.getAll("");
         System.out.println("Number of results = " + hypList.size());
         for (Hyperlink hype : hypList) {
         	System.out.println(hype);

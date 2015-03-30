@@ -237,8 +237,8 @@ public class HyperlinkWebController{
     @RequestMapping(value = "/", method = RequestMethod.GET) // OK
     public String getAllHyperlinks(Model model) {
     	logger.info("Start index.");
-    	logger.info("List size: " + hyperlinkService.getAll().size()); 
-    	model.addAttribute("hyperlinksList", hyperlinkService.getAll());
+    	logger.info("List size: " + hyperlinkService.getAll("").size()); 
+    	model.addAttribute("hyperlinksList", hyperlinkService.getAll(""));
     	return "index";
     }
 }
