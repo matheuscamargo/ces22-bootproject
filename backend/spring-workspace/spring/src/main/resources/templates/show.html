@@ -25,7 +25,7 @@
 			<div class="row">				
 				<div th:if="${message} != null" class="alert alert-danger" role="alert" th:text="${message}"></div>
 				<h2>
-				<p><span th:text="'Link: ' + ${hyperlink.link}"></span></p></h2>				
+				<p><span th:text="'Link: '"></span><a th:href="@{http://{link}(link=${hyperlink.link})}" th:text="${hyperlink.link}"></a></p></h2>				
 				<p>				
 				<ul>
 					<li>Tags: 						

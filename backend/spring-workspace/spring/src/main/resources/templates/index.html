@@ -38,26 +38,27 @@
 		</div>
 		<br/>
 		<div class="row" th:if="${not #lists.isEmpty(hyperlinksList)}">			
-			<div class="col-md-6">
+			<div class="col-md-12">
 	          	<table class="table table-condensed">
 	            	<thead>
 	              	<tr>
-	                	<th th:if="${search} == null" class="col-xs-10">
-	                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/(order='desc')}" th:text="Link" ></a>
-	                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/(order='asce')}" th:text="Link" ></a>
+	                	<th class="col-md-8" th:text="Link"></th>
+	                	<th th:if="${search} == null" class="col-md-2">
+	                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/(order='desc')}" th:text="'Last modification'" ></a>
+	                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/(order='asce')}" th:text="'Last modification'" ></a>
 	                	</th>
-	                	<th th:unless="${search} == null" class="col-xs-10">
+	                	<th th:unless="${search} == null" class="col-md-2">
 	                		<div th:if="${searchTag}">
-		                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/searchlink(q=${search}), order='desc'}" th:text="Link" ></a>
-		                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/searchlink(q=${search}), order='asce'}" th:text="Link" ></a>
+		                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/searchlink(q=${search}), order='desc'}" th:text="'Last modification'" ></a>
+		                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/searchlink(q=${search}), order='asce'}" th:text="'Last modification'" ></a>
 		                	</div>
 	                		<div th:unless="${searchTag}">
-		                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/searchlink(q=${search}), order='desc'}" th:text="Link" ></a>
-		                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/searchlink(q=${search}), order='asce'}" th:text="Link" ></a>
+		                		<a th:if="${ascending}" href="searchlink.html" th:href="@{/searchlink(q=${search}), order='desc'}" th:text="'Last modification'" ></a>
+		                		<a th:unless="${ascending}" href="searchlink.html" th:href="@{/searchlink(q=${search}), order='asce'}" th:text="'Last modification'" ></a>
 		                	</div>
 	                	</th>
-	                	<th class="col-xs-2"></th>
-	                	<th class="col-xs-2"></th>
+	                	<th class="col-md-1"></th>
+	                	<th class="col-md-1"></th>
 	              	</tr>
 	            	</thead>
 	         		<tbody>
@@ -65,6 +66,9 @@
 	                		<td>
 	                			<a href="show.html" th:href="@{/show/{id}(id=${hyperlink.id})}" th:text="${hyperlink.link   }"></a>
 	                			<a class="label label-primary" th:each="tag : ${hyperlink.metaTags}" href="searchtag.html" th:href="@{/searchtag(q=${tag.tag})}" th:text="${tag.tag}"></a>
+	                		</td>
+	                		<td>
+	                			<span th:text="${hyperlink.lastEditedAt}"></span>
 	                		</td>
 	                		<td>
 	                			<a href="edit.html" th:href="@{/edit/{id}(id=${hyperlink.id})}" th:text="Edit" ></a>

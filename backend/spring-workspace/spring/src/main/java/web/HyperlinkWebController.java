@@ -261,7 +261,7 @@ public class HyperlinkWebController{
     	logger.info("Start delete.");
     	try {
     		hyperlinkService.deleteById(id);
-    		model.addAttribute("message", "Hyperlink with id " + id + " succesfully deleted!");
+    		model.addAttribute("message", "Hyperlink succesfully deleted!");
     	}
     	catch (DataAccessException ex) {
     		model.addAttribute("message", "Hyperlink with id " + id + " not found!");
@@ -277,7 +277,7 @@ public class HyperlinkWebController{
     		model.addAttribute("hyperlink", hyperlink);
     		hyperlinkService.deleteMetaTag(id);
     		model.addAttribute("exists", true);
-    		model.addAttribute("message", "Tag with id " + id + " succesfully deleted!");
+    		model.addAttribute("message", "Tag succesfully deleted!");
     		return "redirect:/show/" + hyperlinkId;
     	}
     	catch (DataAccessException ex) {
@@ -294,7 +294,7 @@ public class HyperlinkWebController{
     		model.addAttribute("hyperlink", hyperlink);
     		hyperlinkService.deleteComment(id);
     		model.addAttribute("exists", true);
-    		model.addAttribute("message", "Comment with id " + id + " succesfully deleted!");
+    		model.addAttribute("message", "Comment succesfully deleted!");
     		return "redirect:/show/" + hyperlinkId;
     	}
     	catch (DataAccessException ex) {
